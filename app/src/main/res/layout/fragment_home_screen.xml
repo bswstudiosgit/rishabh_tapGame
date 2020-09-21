@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+   <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+       xmlns:tools="http://schemas.android.com/tools"
+       android:background="#fff"
+    android:id="@+id/framecontainer1"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent">
+
+       <ImageView
+           android:id="@+id/imageView"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:background="@mipmap/tapgame"
+           android:textStyle="bold"
+           app:layout_constraintBottom_toBottomOf="parent"
+           app:layout_constraintEnd_toEndOf="parent"
+           app:layout_constraintStart_toStartOf="parent"
+           app:layout_constraintTop_toTopOf="parent"
+           app:layout_constraintVertical_bias="0.4" />
+
+       <Button
+        android:id="@+id/playbutton"
+        android:layout_width="@dimen/widthvalue"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/marginvalue80"
+        android:background="@drawable/quitbutton"
+        android:text="@string/buttonname"
+        android:textColor="@color/whitecolor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <Button
+        android:id="@+id/countinuebutton"
+        android:layout_width="@dimen/widthvalue"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/marginvalue40"
+        android:background="@drawable/greenpanel"
+        android:text="@string/buttonname2"
+        android:textColor="@color/whitecolor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/playbutton" />
+
+    <Button
+        android:id="@+id/languagebutton"
+        android:layout_width="@dimen/widthvalue"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/marginvalue40"
+        android:background="@drawable/bluecolorpanel"
+        android:text="@string/buttonname3"
+        android:textColor="@color/whitecolor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/countinuebutton" />
+    <Button
+        android:id="@+id/rcvalues"
+        android:layout_width="@dimen/widthvalue"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/marginvalue40"
+        android:background="@drawable/orangecolorpanel"
+        android:text="@string/rcbuttonvalue"
+        android:textColor="@color/whitecolor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/languagebutton" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

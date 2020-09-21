@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "239835038255",
+    "firebase_url": "https://tapgame-1c37f.firebaseio.com",
+    "project_id": "tapgame-1c37f",
+    "storage_bucket": "tapgame-1c37f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:239835038255:android:1546232273f970ed52fcda",
+        "android_client_info": {
+          "package_name": "com.rishabhmatharoo.blacklight"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "239835038255-nd3qm6pa0rkv3j9fpvp1temg7tft6o5g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rishabhmatharoo.blacklight",
+            "certificate_hash": "2aeacac61faa91b762914dd08aa2968096a201a8"
+          }
+        },
+        {
+          "client_id": "239835038255-39tr4ki73galklghv018lfiq9p8v5im8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA6hBcn7n0AzhQ3gUiIQh1svZugfH-KqsI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "239835038255-39tr4ki73galklghv018lfiq9p8v5im8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

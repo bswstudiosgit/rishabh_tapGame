@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TapGame</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <!--<string name="hello_blank_fragment">Hello blank fragment</string>-->
+    <string name="Gameover">खेल खत्म</string>
+    <string name="buttonname">टैप</string>
+    <string name="homebtn">होम</string>
+    <string name="currentscore">वर्तमान स्कोर: </string>
+    <string name="bestscore">सर्वश्रेष्ठ स्कोर: </string>
+    <string name="score">स्कोर:</string>
+    <string name="message">क्या आप खेल को सेव करना चाहते हैं ?</string>
+    <string name="yes">हाँ</string>
+    <string name="no">नहीं</string>
+    <string name="buttonname2">कंटिन्यू </string>
+
+    <string name="replaybtn">फिर से खेले </string>
+
+
+    <string name="buttonname3">भाषा</string>
+    <string name="language1">अंग्रेज़ी</string>
+    <string name="language2">हिन्दी</string>
+    <string name="language3">फ्रेंच</string>
+    <string name="language4">जर्मन</string>
+    <string name="language5">जापानी</string>
+
+    <string name="language6">अरबी</string>
+    <string name="rcbuttonvalue">RCValues</string>
+</resources>

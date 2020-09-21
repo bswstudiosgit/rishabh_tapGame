@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<defaultsMap>
+    <entry>
+        <key>color1</key>
+        <value>#ff0000</value>
+    </entry>
+    <entry>
+        <key>color2</key>
+        <value>#00ff00</value>
+    </entry>
+    <entry>
+        <key>color3</key>
+        <value>#0000ff</value>
+    </entry>
+
+    <entry>
+        <key>color4</key>
+        <value>#FFFF00</value>
+    </entry>
+    <entry>
+        <key>color5</key>
+        <value>#7c7c7c</value>
+    </entry>
+    <entry>
+        <key>HandlerTimer</key>
+        <value>1000</value>
+    </entry>
+    <entry>
+        <key>BG_Var1</key>
+        <value>1</value>
+    </entry>
+</defaultsMap>

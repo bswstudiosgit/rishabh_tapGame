@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--German-->
+<resources>
+
+    <string name="app_name">TapGame</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <!--<string name="hello_blank_fragment">Hello blank fragment</string>-->
+    <string name="Gameover">Spiel ist aus</string>
+    <string name="buttonname">Zapfhahn</string>
+    <string name="homebtn">Zuhause</string>
+    <string name="currentscore">Momentaner Punktestand: </string>
+    <string name="bestscore">Bestes Ergebnis: </string>
+    <string name="score">Ergebnis:</string>
+    <string name="message">Möchten Sie speichern?</string>
+    <string name="yes">Ja</string>
+    <string name="no">Nein</string>
+    <string name="buttonname2">fortsetzen</string>
+
+    <string name="replaybtn">Wiederholung</string>
+
+    <string name="buttonname3">Sprache</string>
+
+    <string name="language1">Englisch</string>
+    <string name="language2">Hindi</string>
+    <string name="language3">Französisch</string>
+    <string name="language4">Deutsche</string>
+    <string name="language5">Japanisch</string>
+    <string name="language6">Arabisch</string>
+    <string name="rcbuttonvalue">RCValues</string>
+
+</resources>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/popuplayout"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:padding="@dimen/paddingsmallvalue"
+        android:background="@drawable/whitebg"
+       >
+
+
+    <ImageView
+        android:id="@+id/closebtn"
+        android:layout_width="@dimen/closebuttonsize"
+        android:layout_height="@dimen/closebuttonsize"
+        android:layout_gravity="left"
+        android:background="@drawable/whitebg"
+        android:src="@drawable/closebtn"
+        app:layout_constraintBottom_toTopOf="@+id/textView2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.041"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.9" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/message"
+        android:textColor="@color/redcolor"
+        android:textSize="@dimen/textsizevalue2"
+
+        app:layout_constraintTop_toBottomOf="@id/textView2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.4" />
+
+    <Button
+        android:id="@+id/cancelbutton"
+        android:layout_width="@dimen/buttonwidth"
+        android:layout_height="@dimen/buttonheight"
+        android:layout_marginTop="@dimen/marginvalue2"
+        android:layout_marginEnd="@dimen/marginvalue3"
+        android:layout_marginRight="@dimen/marginvalue3"
+        android:background="@drawable/quitbutton"
+        android:text="@string/no"
+        app:layout_constraintEnd_toStartOf="@+id/savebutton"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textView2" />
+
+    <Button
+        android:id="@+id/savebutton"
+        android:layout_width="@dimen/buttonwidth"
+        android:layout_height="@dimen/buttonheight"
+        android:background="@drawable/greenpanel"
+        android:text="@string/yes"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textView2"
+
+        android:layout_marginTop="@dimen/marginvalue2"
+        app:layout_constraintStart_toEndOf="@id/cancelbutton"
+        />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

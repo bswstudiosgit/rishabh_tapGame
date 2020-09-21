@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TapGame</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <!--<string name="hello_blank_fragment">Hello blank fragment</string>-->
+    <string name="Gameover">انتهت اللعبة</string>
+    <string name="buttonname">انقر</string>
+    <string name="homebtn">الصفحة الرئيسية</string>
+    <string name="currentscore">النتيجة الحالية: </string>
+    <string name="bestscore">أفضل نتيجة: </string>
+    <string name="score">أحرز هدفا:</string>
+    <string name="message">هل تريد حفظ اللعبة?</string>
+    <string name="yes">نعم</string>
+    <string name="no">لا</string>
+    <string name="replaybtn">إعادة</string>
+    <string name="buttonname2">استمر</string>
+
+
+    <string name="buttonname3">لغة</string>
+    <string name="language1">الإنجليزية</string>
+    <string name="language2">الهندية</string>
+    <string name="language3">فرنسي</string>
+    <string name="language4">ألمانية</string>
+    <string name="language5">اليابانية</string>
+
+    <string name="language6">عربى</string>
+    <string name="rcbuttonvalue">RCValues</string>
+
+</resources>

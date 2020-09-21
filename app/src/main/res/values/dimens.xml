@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="marginvalue">100dp</dimen>
+    <dimen name="widthvalue">100dp</dimen>
+    <dimen name="heightvalue">100dp</dimen>
+    <dimen name="marginvalue2">40dp</dimen>
+    <dimen name="textsizevalue">30sp</dimen>
+
+    <dimen name="textsizevalue2">20sp</dimen>
+    <dimen name="paddingsizevalue">50sp</dimen>
+    <dimen name="marginvalue3">10dp</dimen>
+    <dimen name="marginvalue4">20dp</dimen>
+    <dimen name="width1">40dp</dimen>
+    <dimen name="height1">35dp</dimen>
+    <dimen name="popupwidth">200dp</dimen>
+    <dimen name="popupheight">150dp</dimen>
+    <dimen name="buttonheight">45dp</dimen>
+    <dimen name="buttonwidth">80dp</dimen>
+    <dimen name="paddingsmallvalue">14dp</dimen>
+    <dimen name="closebuttonsize">25dp</dimen>
+    <dimen name="marginvalue20">20dp</dimen>
+    <dimen name="linevalue1">1dp</dimen>
+    <dimen name="marginvalue3dp">3dp</dimen>
+    <dimen name="marginvalue5dp">5dp</dimen>
+    <dimen name="marginvalue80">70dp</dimen>
+    <dimen name="marginvalue40">20dp</dimen>
+    <dimen name="marginvalue240">240dp</dimen>
+    <dimen name="marginvalue96">96dp</dimen>
+    <dimen name="marginvalue12">12dp</dimen>
+    <dimen name="marginvalue280">280dp</dimen>
+    <dimen name="marginvalue2dp">2dp</dimen>
+</resources>

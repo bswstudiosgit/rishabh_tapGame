@@ -1,0 +1,29 @@
+<resources>
+	<dimen name="buttonheight">94.5dp</dimen>
+	<dimen name="popupheight">315dp</dimen>
+	<dimen name="closebuttonsize">52.5dp</dimen>
+	<dimen name="marginvalue3">21dp</dimen>
+	<dimen name="marginvalue4">42dp</dimen>
+	<dimen name="widthvalue">210dp</dimen>
+	<dimen name="paddingsmallvalue">29.4dp</dimen>
+	<dimen name="width1">84dp</dimen>
+	<dimen name="height1">73.5dp</dimen>
+	<dimen name="marginvalue">210dp</dimen>
+	<dimen name="heightvalue">210dp</dimen>
+	<dimen name="marginvalue2">84dp</dimen>
+	<dimen name="buttonwidth">168dp</dimen>
+	<dimen name="popupwidth">420dp</dimen>
+	<dimen name="textsizevalue">63sp</dimen>
+	<dimen name="paddingsizevalue">105sp</dimen>
+	<dimen name="textsizevalue2">42sp</dimen>
+	<dimen name="marginvalue3dp">6.3dp</dimen>
+	<dimen name="marginvalue5dp">10.5dp</dimen>
+	<dimen name="linevalue1">2.1dp</dimen>
+	<dimen name="marginvalue20">42dp</dimen>
+	<dimen name="marginvalue40">42dp</dimen>
+	<dimen name="marginvalue80">147dp</dimen>
+	<dimen name="marginvalue240">504dp</dimen>
+	<dimen name="marginvalue280">588dp</dimen>
+	<dimen name="marginvalue12">25.2dp</dimen>
+	<dimen name="marginvalue96">201.6dp</dimen>
+</resources>
