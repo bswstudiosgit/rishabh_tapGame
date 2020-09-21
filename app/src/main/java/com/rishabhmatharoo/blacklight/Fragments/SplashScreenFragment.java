@@ -12,13 +12,14 @@ import android.widget.ImageView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.rishabhmatharoo.blacklight.AdHandler.AdMobHandler;
 import com.rishabhmatharoo.blacklight.Interfaces.FragmentActionListener;
 import com.rishabhmatharoo.blacklight.Preference.SharedPreferenceClass;
 import com.rishabhmatharoo.blacklight.R;
 
 public class SplashScreenFragment  extends Fragment {
     FragmentActionListener fragmentActionListener;
-   // boolean alreadyloaded=false;
+    // boolean alreadyloaded=false;
 
     public void setFragmentActionListener4(FragmentActionListener fragmentActionListener1){
         this.fragmentActionListener=fragmentActionListener1;
@@ -31,7 +32,7 @@ public class SplashScreenFragment  extends Fragment {
     public void onViewCreated(View view,Bundle savedInstanceState) {
         /*if(!alreadyloaded){*/
             ImageView title=(ImageView)view.findViewById(R.id.tapview);
-            final Animation animation= AnimationUtils.loadAnimation(getContext(),R.anim.bounce3);
+            final Animation animation = AnimationUtils.loadAnimation(getContext(),R.anim.bounce3);
            // alreadyloaded=true;
             animation.setAnimationListener(new Animation.AnimationListener() {
                 @Override

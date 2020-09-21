@@ -20,4 +20,6 @@
 
     <color name="greenpanelcolor">#2ecc71</color>
     <color name="greenpanelcolor2">#27ae60</color>
+    <color name="ad_background_color">#FEF9E7</color>
+    <color name="ad_headingcolor">#330099</color>
 </resources>

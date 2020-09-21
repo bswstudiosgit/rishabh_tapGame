@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_marginTop="@dimen/marginvalue12"
+            android:gravity="center_horizontal"
+            android:padding="5dp"
+            android:textSize="@dimen/textsizevalue2"
+            android:text="Do you want to Exit?"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </TextView>
+
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ad_container"
+            android:layout_margin="@dimen/closebuttonsize"
+            android:elevation="3dp"
+            >
+            <ProgressBar
+                android:id="@+id/progressbarexit"
+                android:layout_gravity="center_horizontal"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </androidx.cardview.widget.CardView>
+
+        <LinearLayout
+            android:layout_marginTop="@dimen/marginvalue12"
+            android:padding="@dimen/paddingsmallvalue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            >
+            <Button
+                android:id="@+id/exitbutton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/yes"
+                android:background="@drawable/greenpanel"
+                />
+            <Button
+                android:background="@drawable/orangecolorpanel"
+                android:id="@+id/cancelbutton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/no"/>
+
+
+
+
+        </LinearLayout>
+    </LinearLayout>
+
+</ScrollView>

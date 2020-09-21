@@ -1,9 +1,7 @@
 package com.rishabhmatharoo.blacklight.Fragments;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.media.MediaPlayer;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -20,6 +18,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.rishabhmatharoo.blacklight.Activity_Main;
+import com.rishabhmatharoo.blacklight.AdHandler.AdMobHandler;
 import com.rishabhmatharoo.blacklight.CustomDialog.ShowRcValueDialog;
 import com.rishabhmatharoo.blacklight.Interfaces.FragmentActionListener;
 import com.rishabhmatharoo.blacklight.Preference.SharedPreferenceClass;
@@ -29,13 +28,16 @@ import com.rishabhmatharoo.blacklight.R;
 public class HomeScreen extends Fragment {
 
    FragmentActionListener fragmentActionListener;
-    private AdView mAdView;
-    InterstitialAd mInterstitialAd;
+
+
     MediaPlayer player;
     boolean ismusicplaying=false;
+
     @Override
     public View onCreateView(LayoutInflater inflater,ViewGroup parent,Bundle savedInstanceState){
+
         return inflater.inflate(R.layout.fragment_home_screen,parent,false);
+
     }
 
     public void setFragmentActionListener(FragmentActionListener fragmentActionListener1){
@@ -78,7 +80,7 @@ public class HomeScreen extends Fragment {
         final Button rcvalues=(Button)view.findViewById(R.id.rcvalues);
 
         final Animation animation= AnimationUtils.loadAnimation(getContext(),R.anim.bounce);
-       // loadIntertitialAd();
+
 
 
 /*        if(SharedPreferenceClass.getInstance(getContext()).read(SharedPreferenceClass.language)==2) {
@@ -102,12 +104,14 @@ public class HomeScreen extends Fragment {
         play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              //  loadIntertitialAd();
+
                      SharedPreferenceClass.getInstance(getContext()).writeBoolean(SharedPreferenceClass.isSave,false);
                       if(fragmentActionListener!=null && !isStateSaved()){
+                          AdMobHandler.getInstance(getActivity()).showIntertitialAd();
                           Bundle bundle=new Bundle();
                           bundle.putString(FragmentActionListener.FRAGMENT_NAME,"GameView");
                           fragmentActionListener.onFragmentSelected(bundle);
+
 
                       }
 
@@ -144,18 +148,9 @@ public class HomeScreen extends Fragment {
             }
         });
     }
-   /* private void loadIntertitialAd(){
-        mInterstitialAd = new InterstitialAd(getContext());
-        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
-        mInterstitialAd.loadAd(new AdRequest.Builder().build());
-        if (mInterstitialAd.isLoaded()) {
-            mInterstitialAd.show();
-        } else {
-            Log.d("TAG", "The interstitial wasn't loaded yet.");
-        }
-    }
 
-    */
+
+
     private void loadBackgroundMusic(){
         if(SharedPreferenceClass.getInstance(getActivity()).readBgMusic().equals("0")){
            player=MediaPlayer.create(getActivity(),R.raw.anothermusic);
@@ -175,6 +170,7 @@ public class HomeScreen extends Fragment {
             player.stop();
         }
     }
+
 
 }
 

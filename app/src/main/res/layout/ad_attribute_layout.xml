@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/closebuttonsize"
+    android:layout_height="@dimen/closebuttonsize"
+    android:orientation="vertical"
+
+
+    >
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="Ad"
+        android:textSize="@dimen/marginvalue12"
+        android:background="@color/yellowpanelcolor2"
+        android:textColor="@color/whitecolor"
+        />
+
+</LinearLayout>

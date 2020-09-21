@@ -6,14 +6,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.content.SharedPreferences;
+import android.app.Activity;
 import android.content.res.Configuration;
-import android.media.MediaPlayer;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -22,7 +18,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.LoadAdError;
@@ -30,13 +25,12 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.installations.FirebaseInstallations;
 import com.google.firebase.installations.InstallationTokenResult;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
-import com.google.firebase.storage.FirebaseStorage;
+import com.rishabhmatharoo.blacklight.AdHandler.AdMobHandler;
 import com.rishabhmatharoo.blacklight.Fragments.GameOverFragment;
 import com.rishabhmatharoo.blacklight.Fragments.GameView;
 import com.rishabhmatharoo.blacklight.Fragments.HomeScreen;
@@ -46,9 +40,7 @@ import com.rishabhmatharoo.blacklight.Interfaces.FragmentActionListener;
 import com.rishabhmatharoo.blacklight.Interfaces.GameViewInterface;
 import com.rishabhmatharoo.blacklight.Interfaces.PopupCallBackFragmentInterface;
 import com.rishabhmatharoo.blacklight.Preference.SharedPreferenceClass;
-import com.rishabhmatharoo.blacklight.RemoteConfig.RemoteColorModel;
 import com.rishabhmatharoo.blacklight.RemoteConfig.RemoteConfigKey;
-import com.rishabhmatharoo.blacklight.Util.Utilclass;
 
 import java.util.Locale;
 
@@ -76,9 +68,10 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activitymain);
-        AdmobMobileSDKIntialization();
 
         adView=findViewById(R.id.adView);
+
+        AdMobHandler.getInstance(Activity_Main.this).loadIntertitialAd();
         View overlay = findViewById(R.id.popupview);
 
         overlay.setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
@@ -98,21 +91,11 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
             ft.commit();
         }
 
-    }
-
-    private void AdmobMobileSDKIntialization(){
-
-        MobileAds.initialize(this, new OnInitializationCompleteListener() {
-            @Override
-            public void onInitializationComplete(InitializationStatus initializationStatus) {
-                loadBannerAd();
-
-            }
-        });
-
-
+        AdMobHandler.getInstance(Activity_Main.this).loadBannerAd(adView);
 
     }
+
+
 
     @Override
     protected void onResume() {
@@ -139,6 +122,7 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
 
             FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.yourfragment,new HomeScreen(),homescreentag);
+
             ft.commit();
 
         }else if(Fragmentname.equalsIgnoreCase(gameviewstr)){
@@ -172,7 +156,9 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
     public void onBackPressed() {
         final Fragment fragmentInFrame = getSupportFragmentManager().findFragmentById(R.id.yourfragment);
         if(fragmentInFrame instanceof HomeScreen){
-            this.finish();
+           // this.finish();
+            ExitDialog dialog=new ExitDialog(this);
+            dialog.show();
         }else if(fragmentInFrame instanceof GameView){
             //gameViewInterface=((GameView) fragmentInFrame).getGameViewInterface1();
             //gameViewInterface.stopHandler();
@@ -254,28 +240,7 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
         }*/
     }
 
-    private void loadBannerAd(){
 
-//
-
-
-            AdRequest adRequest = new AdRequest.Builder().build();
-            adView.loadAd(adRequest);
-            adView.setAdListener(new AdListener(){
-                @Override
-                public void onAdFailedToLoad(LoadAdError adError) {
-                    // Code to be executed when an ad request fails.
-                    Log.d("BannerAd",adError.toString());
-                }
-                @Override
-                public void onAdLoaded() {
-                    // Code to be executed when an ad finishes loading.
-                    Log.d("BannerAd","Finish");
-                }
-
-            });
-
-    }
 
     private void logInstallationAuthToken() {
         // [START get_installation_token]
@@ -325,6 +290,7 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
                 });
         // [END delete_installation]
     }
+
     private void loadRcValues(int time){
         //set Throlling every time value seconds.
         FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
@@ -356,6 +322,9 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
 
     }
 
-
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        AdMobHandler.getInstance(this).destroyNativeAds();
+    }
 }

@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.rishabhmatharoo.blacklight.Activity_Main;
+import com.rishabhmatharoo.blacklight.AdHandler.AdMobHandler;
 import com.rishabhmatharoo.blacklight.Interfaces.FragmentActionListener;
 import com.rishabhmatharoo.blacklight.Interfaces.GameViewInterface;
 import com.rishabhmatharoo.blacklight.Interfaces.PopupCallBackFragmentInterface;
@@ -57,7 +58,6 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
       remoteColorModel=new Gson().fromJson(SharedPreferenceClass.getInstance(getContext()).readColorValue(),
                RemoteColorModel.class);
         handlerTimer=SharedPreferenceClass.getInstance(getContext()).readHandlerTimer();
-
         Log.d("remoteHandlerTime",handlerTimer);
         return inflater.inflate(R.layout.gameviewfragment,group,false);
 
