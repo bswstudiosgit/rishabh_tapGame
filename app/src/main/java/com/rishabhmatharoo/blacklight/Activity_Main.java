@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.app.Activity;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,14 +15,7 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.InterstitialAd;
-import com.google.android.gms.ads.LoadAdError;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.installations.FirebaseInstallations;
@@ -31,6 +23,7 @@ import com.google.firebase.installations.InstallationTokenResult;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.rishabhmatharoo.blacklight.AdHandler.AdMobHandler;
+import com.rishabhmatharoo.blacklight.CustomDialog.ExitDialog;
 import com.rishabhmatharoo.blacklight.Fragments.GameOverFragment;
 import com.rishabhmatharoo.blacklight.Fragments.GameView;
 import com.rishabhmatharoo.blacklight.Fragments.HomeScreen;

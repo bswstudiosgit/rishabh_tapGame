@@ -24,4 +24,7 @@
 
     <string name="language6">Arabic</string>
     <string name="rcbuttonvalue">RCValues</string>
+    <string name="rewardpopupmessage">Watch Ad to get new Chance</string>
+    <string name="watch">Watch</string>
+    <string name="cancel">Cancel</string>
 </resources>

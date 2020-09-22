@@ -17,6 +17,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.rishabhmatharoo.blacklight.Activity_Main;
 import com.rishabhmatharoo.blacklight.AdHandler.AdMobHandler;
+import com.rishabhmatharoo.blacklight.CustomDialog.RewardAdPopupDialog;
 import com.rishabhmatharoo.blacklight.Interfaces.FragmentActionListener;
 import com.rishabhmatharoo.blacklight.Interfaces.GameViewInterface;
 import com.rishabhmatharoo.blacklight.Interfaces.PopupCallBackFragmentInterface;
@@ -59,6 +60,8 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
                RemoteColorModel.class);
         handlerTimer=SharedPreferenceClass.getInstance(getContext()).readHandlerTimer();
         Log.d("remoteHandlerTime",handlerTimer);
+        //Load Reward Ad in onCreateView Method.
+        AdMobHandler.getInstance(getActivity()).loadRewardAd();
         return inflater.inflate(R.layout.gameviewfragment,group,false);
 
     }
@@ -134,6 +137,7 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
 
 
     public void rungame(int finalvar){
+        Log.d("GameView",""+prev_score+" Final Score:"+finalscore);
         if(finalvar!=0){
             finalscore=finalvar;
         }else{
@@ -144,7 +148,7 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
         final int[] prevrandomnumber = {0};
         timer = new Timer();
         //This Background thread will runs for every seconds.
-        setallcolortonormal();
+        //setallcolortonormal();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -157,6 +161,7 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
                             colornumber = 0;
                         }
                     }
+                    Log.d("GameView","PrevScore:"+prev_score+" Final Score:"+finalscore);
                     prevrandomnumber[0] = colornumber;
                     final int finalColornumber = colornumber;
                     final int finalColornumber1 = colornumber;
@@ -216,11 +221,12 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
 
     @Override
     public void onResume() {
-        Log.d("GameView","Onresume");
+
         super.onResume();
 //        pausedapplication=true;
 
         if(!isPausedapplication || !Utilclass.isSavePopActive){
+            Log.d("GameViewP","Onresume");
             prev_score=prev_score-1;
             colornumber++;
             if (colornumber >= 3) {
@@ -244,14 +250,13 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
 
     public void setallcolortonormal(){
         orangecolor.setBackgroundResource(R.drawable.orangecolorpanel);
-        orangecolor.setBackgroundColor(Color.parseColor(remoteColorModel.getColour1()));
-
+        //orangecolor.setBackgroundColor(Color.parseColor(remoteColorModel.getColour1()));
         bluecolor.setBackgroundResource(R.drawable.bluecolorpanel);
-        bluecolor.setBackgroundColor(Color.parseColor(remoteColorModel.getColour2()));
+        //bluecolor.setBackgroundColor(Color.parseColor(remoteColorModel.getColour2()));
         yellowcolor.setBackgroundResource(R.drawable.yellowcolorpanel);
-        yellowcolor.setBackgroundColor(Color.parseColor(remoteColorModel.getColour3()));
+        //yellowcolor.setBackgroundColor(Color.parseColor(remoteColorModel.getColour3()));
         greencolor.setBackgroundResource(R.drawable.greenpanel);
-        greencolor.setBackgroundColor(Color.parseColor(remoteColorModel.getColour4()));
+        //greencolor.setBackgroundColor(Color.parseColor(remoteColorModel.getColour4()));
 
     }
     public void setaparticularcolorgrey(int id){
@@ -259,19 +264,19 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
         {
             case 0:
                 orangecolor.setBackgroundResource(R.drawable.greycolorpanel);
-                orangecolor.setBackgroundColor(Color.parseColor(remoteColorModel.getColour5()));
+                //orangecolor.setBackgroundColor(Color.parseColor(remoteColorModel.getColour5()));
                 break;
             case 1:
                 bluecolor.setBackgroundResource(R.drawable.greycolorpanel);
-                bluecolor.setBackgroundColor(Color.parseColor(remoteColorModel.getColour5()));
+                //bluecolor.setBackgroundColor(Color.parseColor(remoteColorModel.getColour5()));
                 break;
             case 2:
                 yellowcolor.setBackgroundResource(R.drawable.greycolorpanel);
-                yellowcolor.setBackgroundColor(Color.parseColor(remoteColorModel.getColour5()));
+                //yellowcolor.setBackgroundColor(Color.parseColor(remoteColorModel.getColour5()));
                 break;
             case 3:
                 greencolor.setBackgroundResource(R.drawable.greycolorpanel);
-                greencolor.setBackgroundColor(Color.parseColor(remoteColorModel.getColour5()));
+                //greencolor.setBackgroundColor(Color.parseColor(remoteColorModel.getColour5()));
                 break;
 
         }
@@ -353,6 +358,7 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
         });
     }
     private void GameOver(){
+
         Bundle bundle=new Bundle();
         if(fragmentActionListener!=null && !isStateSaved()){
 
@@ -367,6 +373,16 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
         finalscoreduringpausedgame=0;
         handler.removeCallbacksAndMessages(null);
 
+
+       /*
+        RewardAdPopupDialog rewardAdPopupDialog=new RewardAdPopupDialog(getActivity());
+
+        rewardAdPopupDialog.setCancelable(false);
+        rewardAdPopupDialog.show();
+        handler.removeCallbacksAndMessages(null);
+
+
+        */
     }
 /*
     public int stophandler(){

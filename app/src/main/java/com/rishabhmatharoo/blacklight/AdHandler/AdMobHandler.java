@@ -11,8 +11,10 @@ import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 
+import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
@@ -26,6 +28,10 @@ import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.google.android.gms.ads.formats.UnifiedNativeAdView;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.google.android.gms.ads.rewarded.RewardItem;
+import com.google.android.gms.ads.rewarded.RewardedAd;
+import com.google.android.gms.ads.rewarded.RewardedAdCallback;
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.rishabhmatharoo.blacklight.Activity_Main;
 import com.rishabhmatharoo.blacklight.R;
 
@@ -36,6 +42,7 @@ public class AdMobHandler {
 
     private Activity activity;
     private UnifiedNativeAd nativeAd;
+    private RewardedAd rewardedAd;
 
     private AdMobHandler(Activity activity){
 
@@ -190,7 +197,56 @@ public class AdMobHandler {
         if(nativeAd!=null){
             nativeAd.destroy();
 
+
+        }
+    }
+    public void loadRewardAd(){
+        rewardedAd = new RewardedAd(activity,
+                "ca-app-pub-3940256099942544/5224354917");
+        RewardedAdLoadCallback adLoadCallback = new RewardedAdLoadCallback() {
+            @Override
+            public void onRewardedAdLoaded() {
+                // Ad successfully loaded.
+            }
+
+            @Override
+            public void onRewardedAdFailedToLoad(LoadAdError adError) {
+                // Ad failed to load.
+            }
+        };
+        rewardedAd.loadAd(new AdRequest.Builder().build(), adLoadCallback);
+    }
+    public void showRewardAd(){
+        if (rewardedAd.isLoaded()) {
+
+            RewardedAdCallback adCallback = new RewardedAdCallback() {
+                @Override
+                public void onRewardedAdOpened() {
+                    // Ad opened.
+                }
+
+                @Override
+                public void onRewardedAdClosed() {
+                    // Ad closed.
+                }
+
+                @Override
+                public void onUserEarnedReward(@NonNull RewardItem reward) {
+                    // User earned reward.
+                    Log.d("Reward",""+reward.getAmount());
+                    loadRewardAd();
+                }
+
+                @Override
+                public void onRewardedAdFailedToShow(AdError adError) {
+                    // Ad failed to display.
+                }
+            };
+            rewardedAd.show(activity, adCallback);
+        } else {
+            Log.d("TAG", "The rewarded ad wasn't loaded yet.");
         }
 
     }
+
 }

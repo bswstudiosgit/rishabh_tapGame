@@ -27,4 +27,8 @@
 
     <string name="language6">अरबी</string>
     <string name="rcbuttonvalue">RCValues</string>
+
+    <string name="rewardpopupmessage">नया मौका पाने के लिए विज्ञापन देखें</string>
+    <string name="watch">देखें</string>
+    <string name="cancel">नहीं</string>
 </resources>

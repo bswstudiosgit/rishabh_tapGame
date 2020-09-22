@@ -1,4 +1,4 @@
-package com.rishabhmatharoo.blacklight;
+package com.rishabhmatharoo.blacklight.CustomDialog;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -28,6 +28,7 @@ import com.google.android.gms.ads.formats.UnifiedNativeAdView;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.rishabhmatharoo.blacklight.AdHandler.AdMobHandler;
+import com.rishabhmatharoo.blacklight.R;
 
 public class ExitDialog extends Dialog {
     private Button refresh,yes,no;
