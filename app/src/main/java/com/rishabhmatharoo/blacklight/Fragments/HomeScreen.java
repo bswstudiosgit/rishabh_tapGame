@@ -23,6 +23,7 @@ import com.rishabhmatharoo.blacklight.CustomDialog.ShowRcValueDialog;
 import com.rishabhmatharoo.blacklight.Interfaces.FragmentActionListener;
 import com.rishabhmatharoo.blacklight.Preference.SharedPreferenceClass;
 import com.rishabhmatharoo.blacklight.R;
+import com.rishabhmatharoo.blacklight.Util.Utilclass;
 
 
 public class HomeScreen extends Fragment {
@@ -35,7 +36,7 @@ public class HomeScreen extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater,ViewGroup parent,Bundle savedInstanceState){
-
+        Utilclass.initRewardVariable();
         return inflater.inflate(R.layout.fragment_home_screen,parent,false);
 
     }

@@ -14,11 +14,11 @@
 
     <ImageView
         android:id="@+id/reward_closebtn"
-        android:layout_width="@dimen/closebuttonsize"
-        android:layout_height="@dimen/closebuttonsize"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/marginvalue"
         android:layout_gravity="left"
         android:background="@drawable/whitebg"
-        android:src="@drawable/closebtn"
+        android:src="@drawable/ad_icon"
         app:layout_constraintBottom_toTopOf="@+id/reward_textView2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.041"
@@ -39,7 +39,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.4" />
+        app:layout_constraintVertical_bias="0.5" />
 
     <Button
         android:id="@+id/reward_watch"

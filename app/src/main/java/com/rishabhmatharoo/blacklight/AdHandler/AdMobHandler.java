@@ -3,6 +3,7 @@ package com.rishabhmatharoo.blacklight.AdHandler;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -32,8 +33,11 @@ import com.google.android.gms.ads.rewarded.RewardItem;
 import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.android.gms.ads.rewarded.RewardedAdCallback;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
+import com.google.firebase.storage.internal.Util;
 import com.rishabhmatharoo.blacklight.Activity_Main;
+import com.rishabhmatharoo.blacklight.Interfaces.FragmentActionListener;
 import com.rishabhmatharoo.blacklight.R;
+import com.rishabhmatharoo.blacklight.Util.Utilclass;
 
 public class AdMobHandler {
     private static AdMobHandler instance;
@@ -43,7 +47,7 @@ public class AdMobHandler {
     private Activity activity;
     private UnifiedNativeAd nativeAd;
     private RewardedAd rewardedAd;
-
+    FragmentActionListener fragmentActionListener;
     private AdMobHandler(Activity activity){
 
         this.activity=activity;
@@ -53,6 +57,9 @@ public class AdMobHandler {
 
             }
         });
+        if (activity instanceof Activity_Main) {
+            fragmentActionListener = ((FragmentActionListener) activity);
+        }
 
     }
     public synchronized static AdMobHandler getInstance(Activity activity){
@@ -228,13 +235,23 @@ public class AdMobHandler {
                 @Override
                 public void onRewardedAdClosed() {
                     // Ad closed.
+                    if(!Utilclass.hasAlreadytakenreward){
+                        Bundle bundle = new Bundle();
+                        if (fragmentActionListener != null ) {
+                            bundle.putString(FragmentActionListener.FRAGMENT_NAME, "GameOver");
+                            bundle.putInt("FinalScore", Utilclass.finalScoreDuringRewardAd);
+                            fragmentActionListener.onFragmentSelected(bundle);
+                        }
+                    }
+
                 }
 
                 @Override
                 public void onUserEarnedReward(@NonNull RewardItem reward) {
                     // User earned reward.
                     Log.d("Reward",""+reward.getAmount());
-                    loadRewardAd();
+                    Utilclass.hasAlreadytakenreward=true;
+                    Utilclass.rewardAdPopupActive=false;
                 }
 
                 @Override

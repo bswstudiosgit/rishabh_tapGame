@@ -4,6 +4,8 @@ import androidx.fragment.app.Fragment;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -76,6 +78,7 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
         scorecounter=(TextView) view.findViewById(R.id.scorecounter);
         //backgroundImg.setBackgroundColor(Color.parseColor("#dfe6e9"));
         backbutton=(ImageView)view.findViewById(R.id.backbutton);
+        setallcolortonormal();
         if(SharedPreferenceClass.getInstance(getContext()).readboolean(SharedPreferenceClass.isSave)){
 
             finalscoreduringpausedgame=SharedPreferenceClass.getInstance(getContext()).read(SharedPreferenceClass.savegamescore);
@@ -225,7 +228,7 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
         super.onResume();
 //        pausedapplication=true;
 
-        if(!isPausedapplication || !Utilclass.isSavePopActive){
+        if((!isPausedapplication || !Utilclass.isSavePopActive) && !Utilclass.rewardAdPopupActive){
             Log.d("GameViewP","Onresume");
             prev_score=prev_score-1;
             colornumber++;
@@ -249,33 +252,44 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
     }
 
     public void setallcolortonormal(){
-        orangecolor.setBackgroundResource(R.drawable.orangecolorpanel);
-        //orangecolor.setBackgroundColor(Color.parseColor(remoteColorModel.getColour1()));
-        bluecolor.setBackgroundResource(R.drawable.bluecolorpanel);
-        //bluecolor.setBackgroundColor(Color.parseColor(remoteColorModel.getColour2()));
-        yellowcolor.setBackgroundResource(R.drawable.yellowcolorpanel);
-        //yellowcolor.setBackgroundColor(Color.parseColor(remoteColorModel.getColour3()));
-        greencolor.setBackgroundResource(R.drawable.greenpanel);
-        //greencolor.setBackgroundColor(Color.parseColor(remoteColorModel.getColour4()));
+        Drawable OrangeDrawable = getResources().getDrawable(R.drawable.orangecolorpanel);
+        OrangeDrawable.setColorFilter(Color.parseColor(remoteColorModel.getColour1()), PorterDuff.Mode.SRC_ATOP);
+        orangecolor.setBackground(OrangeDrawable);
+        Drawable BlueDrawable=getResources().getDrawable(R.drawable.bluecolorpanel);
+        BlueDrawable.setColorFilter(Color.parseColor(remoteColorModel.getColour2()),PorterDuff.Mode.SRC_ATOP);
+        bluecolor.setBackground(BlueDrawable);
+        Drawable YellowDrawable=getResources().getDrawable(R.drawable.yellowcolorpanel);
+        YellowDrawable.setColorFilter(Color.parseColor(remoteColorModel.getColour3()),PorterDuff.Mode.SRC_ATOP);
+        yellowcolor.setBackground(YellowDrawable);
+        Drawable GreenDrawable=getResources().getDrawable(R.drawable.greycolorpanel);
+        GreenDrawable.setColorFilter(Color.parseColor(remoteColorModel.getColour4()),PorterDuff.Mode.SRC_ATOP);
+        greencolor.setBackground(GreenDrawable);
 
     }
     public void setaparticularcolorgrey(int id){
+
+        Drawable GreyDrawable = getResources().getDrawable(R.drawable.greycolorpanel);
+        GreyDrawable.setColorFilter(Color.parseColor(remoteColorModel.getColour5()), PorterDuff.Mode.SRC_ATOP);
         switch (id)
         {
             case 0:
-                orangecolor.setBackgroundResource(R.drawable.greycolorpanel);
+                orangecolor.setBackground(GreyDrawable);
+                //orangecolor.setBackgroundResource(R.drawable.greycolorpanel);
                 //orangecolor.setBackgroundColor(Color.parseColor(remoteColorModel.getColour5()));
                 break;
             case 1:
-                bluecolor.setBackgroundResource(R.drawable.greycolorpanel);
+                bluecolor.setBackground(GreyDrawable);
+                //bluecolor.setBackgroundResource(R.drawable.greycolorpanel);
                 //bluecolor.setBackgroundColor(Color.parseColor(remoteColorModel.getColour5()));
                 break;
             case 2:
-                yellowcolor.setBackgroundResource(R.drawable.greycolorpanel);
+                yellowcolor.setBackground(GreyDrawable);
+                //yellowcolor.setBackgroundResource(R.drawable.greycolorpanel);
                 //yellowcolor.setBackgroundColor(Color.parseColor(remoteColorModel.getColour5()));
                 break;
             case 3:
-                greencolor.setBackgroundResource(R.drawable.greycolorpanel);
+                greencolor.setBackground(GreyDrawable);
+                //greencolor.setBackgroundResource(R.drawable.greycolorpanel);
                 //greencolor.setBackgroundColor(Color.parseColor(remoteColorModel.getColour5()));
                 break;
 
@@ -358,19 +372,27 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
         });
     }
     private void GameOver(){
-
-        Bundle bundle=new Bundle();
-        if(fragmentActionListener!=null && !isStateSaved()){
-
-            bundle.putString(FragmentActionListener.FRAGMENT_NAME,"GameOver");
-
-            bundle.putInt(finalscorestring,finalscore);
-
-            fragmentActionListener.onFragmentSelected(bundle);
+        if(!Utilclass.hasAlreadytakenreward){
+            RewardAdPopupDialog rewardAdPopupDialog=new RewardAdPopupDialog(getActivity());
+            rewardAdPopupDialog.setCancelable(false);
+            rewardAdPopupDialog.show();
+            Utilclass.finalScoreDuringRewardAd=finalscore;
+            Utilclass.rewardAdPopupActive=true;
         }else {
+            Bundle bundle = new Bundle();
+            if (fragmentActionListener != null && !isStateSaved()) {
+
+                bundle.putString(FragmentActionListener.FRAGMENT_NAME, "GameOver");
+
+                bundle.putInt(finalscorestring, finalscore);
+
+                fragmentActionListener.onFragmentSelected(bundle);
+            } else {
+            }
+
+            finalscore=0;
+            finalscoreduringpausedgame=0;
         }
-        finalscore=0;
-        finalscoreduringpausedgame=0;
         handler.removeCallbacksAndMessages(null);
 
 

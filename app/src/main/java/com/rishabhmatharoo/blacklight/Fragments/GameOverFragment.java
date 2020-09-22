@@ -20,6 +20,7 @@ import com.rishabhmatharoo.blacklight.Activity_Main;
 import com.rishabhmatharoo.blacklight.Interfaces.FragmentActionListener;
 import com.rishabhmatharoo.blacklight.R;
 import com.rishabhmatharoo.blacklight.Preference.SharedPreferenceClass;
+import com.rishabhmatharoo.blacklight.Util.Utilclass;
 
 public class GameOverFragment extends Fragment {
     int finalscore=0;
@@ -27,7 +28,7 @@ public class GameOverFragment extends Fragment {
     InterstitialAd mInterstitialAd;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState){
-
+        Utilclass.initRewardVariable();
        if(this.getArguments()!=null){
            finalscore=this.getArguments().getInt("FinalScore");
        }
