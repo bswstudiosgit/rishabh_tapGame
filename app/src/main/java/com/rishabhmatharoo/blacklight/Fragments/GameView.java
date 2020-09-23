@@ -19,10 +19,12 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.rishabhmatharoo.blacklight.Activity_Main;
 import com.rishabhmatharoo.blacklight.AdHandler.AdMobHandler;
+import com.rishabhmatharoo.blacklight.CustomDialog.ExitDialog;
 import com.rishabhmatharoo.blacklight.CustomDialog.RewardAdPopupDialog;
 import com.rishabhmatharoo.blacklight.Interfaces.FragmentActionListener;
 import com.rishabhmatharoo.blacklight.Interfaces.GameViewInterface;
 import com.rishabhmatharoo.blacklight.Interfaces.PopupCallBackFragmentInterface;
+import com.rishabhmatharoo.blacklight.Interfaces.TransactionCallBack;
 import com.rishabhmatharoo.blacklight.Preference.SharedPreferenceClass;
 import com.rishabhmatharoo.blacklight.R;
 import com.rishabhmatharoo.blacklight.CustomDialog.SavePopupDialog;
@@ -33,7 +35,7 @@ import com.rishabhmatharoo.blacklight.Util.Utilclass;
 import java.util.Random;
 import java.util.Timer;
 
-public class GameView extends Fragment implements PopupCallBackFragmentInterface, GameViewInterface {
+public class GameView extends Fragment implements PopupCallBackFragmentInterface, GameViewInterface{
 
     private ImageView orangecolor,bluecolor,yellowcolor,greencolor;
     private TextView scorecounter;
@@ -48,6 +50,7 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
     private static String colornumkey="colornum";
     public static String finalscorestring="FinalScore";
     private boolean isPausedapplication=false;
+    private boolean isSavePopupActive=false;
     //Interfaces
     PopupCallBackFragmentInterface popupCallBackFragmentInterface;
     FragmentActionListener fragmentActionListener;
@@ -64,6 +67,17 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
         Log.d("remoteHandlerTime",handlerTimer);
         //Load Reward Ad in onCreateView Method.
         AdMobHandler.getInstance(getActivity()).loadRewardAd();
+        AdMobHandler.getInstance(getActivity()).setCallBackReference(new TransactionCallBack() {
+            @Override
+            public void onScreentransaction() {
+                Bundle bundle = new Bundle();
+                if (fragmentActionListener != null ) {
+                    bundle.putString(FragmentActionListener.FRAGMENT_NAME, "GameOver");
+                    bundle.putInt("FinalScore", finalscore);
+                    fragmentActionListener.onFragmentSelected(bundle);
+                }
+            }
+        });
         return inflater.inflate(R.layout.gameviewfragment,group,false);
 
     }
@@ -121,17 +135,21 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
             public void onClick(View v) {
 
                 //SharedPreferenceClass.getInstance(getContext()).writeBoolean(SharedPreferenceClass.isPopupActive,true);
-                Utilclass.isSavePopActive=true;
-                SavePopupDialog dialog=new SavePopupDialog(getActivity());
-                dialog.setCancelable(false);
-                dialog.setPopupCallBackFragmentInterface(popupCallBackFragmentInterface);
-                dialog.setGameViewInterFace(gameViewInterface);
-                SharedPreferenceClass.getInstance(getContext()).write(SharedPreferenceClass.savegamescore, finalscore);
-                SharedPreferenceClass.getInstance(getContext()).write(SharedPreferenceClass.colornum,colornumber);
-
-              //  dialog.setRungamehandler(GameView.this);
-                dialog.show();
-                handler.removeCallbacksAndMessages(null);
+                //Utilclass.isSavePopActive=true;
+                if(!new RewardAdPopupDialog(getActivity()).isShowing()) {
+                    isSavePopupActive = true;
+                    SavePopupDialog dialog = new SavePopupDialog(getActivity());
+                    dialog.setCancelable(false);
+                    dialog.setPopupCallBackFragmentInterface(popupCallBackFragmentInterface);
+                    dialog.setGameViewInterFace(gameViewInterface);
+                    SharedPreferenceClass.getInstance(getContext()).write(SharedPreferenceClass.savegamescore, finalscore);
+                    SharedPreferenceClass.getInstance(getContext()).write(SharedPreferenceClass.colornum, colornumber);
+                    ExitDialog dialog1 = new ExitDialog(getActivity());
+                    // dialog.setRungamehandler(GameView.this);
+                    dialog.show();
+                    dialog1.show();
+                    handler.removeCallbacksAndMessages(null);
+                }
 
             }
         });
@@ -228,7 +246,7 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
         super.onResume();
 //        pausedapplication=true;
 
-        if((!isPausedapplication || !Utilclass.isSavePopActive) && !Utilclass.rewardAdPopupActive){
+        if((!isPausedapplication || !isSavePopupActive) && !Utilclass.rewardAdPopupActive){
             Log.d("GameViewP","Onresume");
             prev_score=prev_score-1;
             colornumber++;
@@ -294,6 +312,12 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
                 break;
 
         }
+    }
+    public void disableAllListener(){
+        orangecolor.setEnabled(false);
+        yellowcolor.setEnabled(false);
+        greencolor.setEnabled(false);
+        bluecolor.setEnabled(false);
     }
     public void enablelistener(int id){
         checkGameOver(id);
@@ -372,7 +396,10 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
         });
     }
     private void GameOver(){
+
         if(!Utilclass.hasAlreadytakenreward){
+            disableAllListener();
+            Log.d("rewardDialog","Dialog");
             RewardAdPopupDialog rewardAdPopupDialog=new RewardAdPopupDialog(getActivity());
             rewardAdPopupDialog.setCancelable(false);
             rewardAdPopupDialog.show();
@@ -418,6 +445,7 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
 
     @Override
     public void onCallBack(String str) {
+        isSavePopupActive=false;
         getFragmentManager().popBackStack(str,0);
 
     }
@@ -431,6 +459,7 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
     public void runHandler() {
         Log.d("Yes Calling","yes calling"+SharedPreferenceClass.getInstance(getContext()).read(SharedPreferenceClass.savegamescore));
         rungame(SharedPreferenceClass.getInstance(getContext()).read(SharedPreferenceClass.savegamescore));
+        isSavePopupActive=false;
     }
 
     public void openpopup(){
@@ -438,13 +467,20 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
         SharedPreferenceClass.getInstance(getContext()).write(SharedPreferenceClass.savegamescore, finalscore);
         SharedPreferenceClass.getInstance(getContext()).write(SharedPreferenceClass.colornum,colornumber);
        //SharedPreferenceClass.getInstance(getContext()).writeBoolean(SharedPreferenceClass.isPopupActive,true);
-        Utilclass.isSavePopActive=true;
-        dialog=new SavePopupDialog(getActivity());
-        dialog.setPopupCallBackFragmentInterface(popupCallBackFragmentInterface);
-        dialog.setGameViewInterFace(gameViewInterface);
-        dialog.setCancelable(false);
-        dialog.show();
+        isSavePopupActive=true;
+        //Utilclass.isSavePopActive=true;
+        if(!new RewardAdPopupDialog(getActivity()).isShowing()) {
+            dialog = new SavePopupDialog(getActivity());
+            dialog.setPopupCallBackFragmentInterface(popupCallBackFragmentInterface);
+            dialog.setGameViewInterFace(gameViewInterface);
+
+            dialog.setCancelable(false);
+            dialog.show();
+            ExitDialog dialog1=new ExitDialog(getActivity());
+            dialog1.show();
+        }
     }
+
 
 /*
     public void setFragmentActionListener3(FragmentActionListener fragmentActionListener1){

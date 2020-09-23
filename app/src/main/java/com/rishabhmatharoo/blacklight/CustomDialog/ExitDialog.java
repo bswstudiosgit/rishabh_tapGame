@@ -45,22 +45,26 @@ public class ExitDialog extends Dialog {
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.exit_popup_layout);
+
         try {
             ViewGroup.LayoutParams params = getWindow().getAttributes();
             if (params != null) {
                 params.width = ViewGroup.LayoutParams.MATCH_PARENT;
                 params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+
                 getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+
         progressBar=findViewById(R.id.progressbarexit);
         progressBar.setVisibility(View.VISIBLE);
 
-        yes=findViewById(R.id.exitbutton);
-        no=findViewById(R.id.cancelbutton);
-        yes.setOnClickListener(new View.OnClickListener() {
+        //yes=findViewById(R.id.exitbutton);
+        //no=findViewById(R.id.cancelbutton);
+        /*yes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 main.finish();
@@ -71,13 +75,15 @@ public class ExitDialog extends Dialog {
             public void onClick(View v) {
                 dismiss();
             }
-        });
+        });*/
+
         refreshAd();
     }
     private void refreshAd(){
 
         CardView cardView=findViewById(R.id.ad_container);
-        AdMobHandler.getInstance(getOwnerActivity()).showNativeAd(cardView,progressBar);
+        //Here we will show the Ad
+        AdMobHandler.getInstance(main).showNativeAd(cardView);
 
     }
 

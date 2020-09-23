@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -19,6 +20,7 @@ import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.LoadAdError;
@@ -33,21 +35,25 @@ import com.google.android.gms.ads.rewarded.RewardItem;
 import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.android.gms.ads.rewarded.RewardedAdCallback;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
-import com.google.firebase.storage.internal.Util;
 import com.rishabhmatharoo.blacklight.Activity_Main;
+import com.rishabhmatharoo.blacklight.CustomDialog.ExitDialog;
 import com.rishabhmatharoo.blacklight.Interfaces.FragmentActionListener;
+import com.rishabhmatharoo.blacklight.Interfaces.TransactionCallBack;
 import com.rishabhmatharoo.blacklight.R;
 import com.rishabhmatharoo.blacklight.Util.Utilclass;
 
 public class AdMobHandler {
     private static AdMobHandler instance;
     InterstitialAd mInterstitialAd;
-    ProgressDialog progressDialog;
-
     private Activity activity;
     private UnifiedNativeAd nativeAd;
     private RewardedAd rewardedAd;
     FragmentActionListener fragmentActionListener;
+    private String interstitialAdUnitId="ca-app-pub-3940256099942544/1033173712";
+    private String rewardAdUnitId="ca-app-pub-3940256099942544/5224354917";
+    private String nativeAdUnitId="ca-app-pub-3940256099942544/2247696110";
+    private String bannerAdId="ca-app-pub-3940256099942544/6300978111";
+    public TransactionCallBack callBack;
     private AdMobHandler(Activity activity){
 
         this.activity=activity;
@@ -68,10 +74,16 @@ public class AdMobHandler {
         }
         return instance;
     }
-    public void loadBannerAd(AdView adView){
+    public void loadBannerAd(){
+        AdView bannerad=new AdView(activity);
+        bannerad.setAdUnitId(bannerAdId);
+        bannerad.setAdSize(AdSize.SMART_BANNER);
+        LinearLayout layout = (LinearLayout)activity.findViewById(R.id.adView);
+        layout.addView(bannerad);
+
         AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
-        adView.setAdListener(new AdListener(){
+        bannerad.loadAd(adRequest);
+        bannerad.setAdListener(new AdListener(){
             @Override
             public void onAdFailedToLoad(LoadAdError adError) {
                 // Code to be executed when an ad request fails.
@@ -87,7 +99,7 @@ public class AdMobHandler {
     }
     public void loadIntertitialAd(){
         mInterstitialAd = new InterstitialAd(activity.getApplicationContext());
-        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.setAdUnitId(interstitialAdUnitId);
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
         mInterstitialAd.setAdListener(new AdListener(){
                 @Override
@@ -121,28 +133,27 @@ public class AdMobHandler {
             mInterstitialAd.loadAd(adRequest);
         }
     }
-    public void showNativeAd(final CardView cardView,final ProgressBar progressBar){
+    public void loadNativeAd(){
 
-        AdLoader adLoader = new AdLoader.Builder(activity.getApplicationContext(), "ca-app-pub-3940256099942544/2247696110")
+        AdLoader adLoader = new AdLoader.Builder(activity.getApplicationContext(), nativeAdUnitId)
                 .forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
                     @Override
                     public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
                         // Show the ad.
-                        if(nativeAd!=null)
+                        //if(nativeAd!=null)
                             nativeAd=unifiedNativeAd;
-                        UnifiedNativeAdView adView=(UnifiedNativeAdView)activity.getLayoutInflater().inflate(R.layout.native_ad_layout,null);
+                        /*
                         populateNativeAd(adView,unifiedNativeAd);
-                        cardView.removeAllViews();
-                        cardView.addView(adView);
-                        //refresh.setEnabled(true);
-                        progressBar.setVisibility(View.INVISIBLE);
+                         */
+                        //UnifiedNativeAdView adView=(UnifiedNativeAdView)activity.getLayoutInflater().inflate(R.layout.native_ad_layout,null);
+
                     }
                 })
                 .withAdListener(new AdListener() {
                     @Override
                     public void onAdFailedToLoad(LoadAdError adError) {
                         // Handle the failure by logging, altering the UI, and so on.
-                        progressBar.setVisibility(View.INVISIBLE);
+                        //progressBar.setVisibility(View.INVISIBLE);
                     }
                 })
                 .withNativeAdOptions(new NativeAdOptions.Builder()
@@ -151,6 +162,14 @@ public class AdMobHandler {
                         .build())
                 .build();
         adLoader.loadAd(new AdRequest.Builder().build());
+    }
+    public void showNativeAd(CardView cardView){
+        UnifiedNativeAdView adView=(UnifiedNativeAdView)activity.getLayoutInflater().inflate(R.layout.native_ad_layout,null);
+        populateNativeAd(adView,nativeAd);
+        cardView.removeAllViews();
+        cardView.addView(adView);
+       // progressBar.setVisibility(View.INVISIBLE);
+
     }
     private void populateNativeAd(UnifiedNativeAdView nativeAdView, UnifiedNativeAd nativeAd){
         nativeAdView.setHeadlineView(nativeAdView.findViewById(R.id.adv_headline));
@@ -199,6 +218,7 @@ public class AdMobHandler {
             nativeAdView.getCallToActionView().setVisibility(View.VISIBLE);
         }
         nativeAdView.setNativeAd(nativeAd);
+        loadNativeAd();
     }
     public void destroyNativeAds(){
         if(nativeAd!=null){
@@ -209,16 +229,22 @@ public class AdMobHandler {
     }
     public void loadRewardAd(){
         rewardedAd = new RewardedAd(activity,
-                "ca-app-pub-3940256099942544/5224354917");
+                rewardAdUnitId);
         RewardedAdLoadCallback adLoadCallback = new RewardedAdLoadCallback() {
             @Override
             public void onRewardedAdLoaded() {
                 // Ad successfully loaded.
+                Log.d("RewardAd","Ad is loaded Completed");
+
             }
 
             @Override
             public void onRewardedAdFailedToLoad(LoadAdError adError) {
                 // Ad failed to load.
+                Log.d("RewardAd","Ad load failed");
+                //This boolean will not let Reward Ad popup to be displayed.
+                Utilclass.hasAlreadytakenreward=true;
+
             }
         };
         rewardedAd.loadAd(new AdRequest.Builder().build(), adLoadCallback);
@@ -236,12 +262,16 @@ public class AdMobHandler {
                 public void onRewardedAdClosed() {
                     // Ad closed.
                     if(!Utilclass.hasAlreadytakenreward){
-                        Bundle bundle = new Bundle();
+
+                       /* Bundle bundle = new Bundle();
                         if (fragmentActionListener != null ) {
                             bundle.putString(FragmentActionListener.FRAGMENT_NAME, "GameOver");
                             bundle.putInt("FinalScore", Utilclass.finalScoreDuringRewardAd);
                             fragmentActionListener.onFragmentSelected(bundle);
                         }
+
+                        */
+                       callBack.onScreentransaction();
                     }
 
                 }
@@ -252,6 +282,8 @@ public class AdMobHandler {
                     Log.d("Reward",""+reward.getAmount());
                     Utilclass.hasAlreadytakenreward=true;
                     Utilclass.rewardAdPopupActive=false;
+                        Log.d("ExitGameDialog","Dismiss");
+                        //new ExitDialog(activity).dismiss();
                 }
 
                 @Override
@@ -264,6 +296,9 @@ public class AdMobHandler {
             Log.d("TAG", "The rewarded ad wasn't loaded yet.");
         }
 
+    }
+    public void setCallBackReference(TransactionCallBack transactionCallBack){
+        this.callBack=transactionCallBack;
     }
 
 }

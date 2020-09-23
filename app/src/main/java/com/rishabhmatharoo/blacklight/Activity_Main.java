@@ -46,25 +46,27 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
     private String gameoverstr="GameOver";
     private String gameovertag="gameover";
     private String languagestr="LanguageFragment";
-    private String resume="Resume";
     private String languagetag="languagefragment";
     String TAG="$$$";
     FirebaseRemoteConfig firebaseRemoteConfig= FirebaseRemoteConfig.getInstance();
     AdView adView;
     GameViewInterface gameViewInterface;
     int cachetime=3600;
+    private String bannerAdId="ca-app-pub-3940256099942544/6300978111";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        loadRcValues(cachetime);
+        loadRcValues(0);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activitymain);
 
-        adView=findViewById(R.id.adView);
-
+       /* adView=findViewById(R.id.adView);
+        adView.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
+        */
         AdMobHandler.getInstance(Activity_Main.this).loadIntertitialAd();
+        AdMobHandler.getInstance(Activity_Main.this).loadNativeAd();
         View overlay = findViewById(R.id.popupview);
 
         overlay.setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
@@ -84,7 +86,7 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
             ft.commit();
         }
 
-        AdMobHandler.getInstance(Activity_Main.this).loadBannerAd(adView);
+        AdMobHandler.getInstance(Activity_Main.this).loadBannerAd();
 
     }
 
@@ -149,9 +151,9 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
     public void onBackPressed() {
         final Fragment fragmentInFrame = getSupportFragmentManager().findFragmentById(R.id.yourfragment);
         if(fragmentInFrame instanceof HomeScreen){
-           // this.finish();
-            ExitDialog dialog=new ExitDialog(this);
-            dialog.show();
+            this.finish();
+            //ExitDialog dialog=new ExitDialog(this);
+            //dialog.show();
         }else if(fragmentInFrame instanceof GameView){
             //gameViewInterface=((GameView) fragmentInFrame).getGameViewInterface1();
             //gameViewInterface.stopHandler();
@@ -237,7 +239,6 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
 
     private void logInstallationAuthToken() {
         // [START get_installation_token]
-
         FirebaseInstallations.getInstance().getToken(/* forceRefresh */false)
                 .addOnCompleteListener(new OnCompleteListener<InstallationTokenResult>() {
                     @Override

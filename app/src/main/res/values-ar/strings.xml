@@ -30,5 +30,7 @@
     <string name="rewardpopupmessage">Watch Ad to get new Chance</string>
     <string name="watch">Watch</string>
     <string name="cancel">Cancel</string>
+    <string name="exitdialog">Do you want to Exit?</string>
+
 
 </resources>

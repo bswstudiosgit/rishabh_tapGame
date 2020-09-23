@@ -3,6 +3,8 @@ package com.rishabhmatharoo.blacklight.CustomDialog;
 import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -25,6 +27,7 @@ public class SavePopupDialog extends Dialog implements android.view.View.OnClick
     String tag2="Resume";
     PopupCallBackFragmentInterface popupCallBackFragmentInterface;
     GameViewInterface gameViewInterface;
+    private int certainbottomvalue=5;
     public SavePopupDialog(Activity activity){
         super(activity);
         this.main=activity;
@@ -39,11 +42,16 @@ public class SavePopupDialog extends Dialog implements android.view.View.OnClick
             if (params != null) {
                 params.width = ViewGroup.LayoutParams.MATCH_PARENT;
                 params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+
+                //Log.d("gravitytop",""+Gravity.CENTER);
+                getWindow().setGravity(Gravity.TOP);
                 getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+        //ExitDialog exitDialog=new ExitDialog(main);
+        //exitDialog.show();
         no=(Button)findViewById(R.id.cancelbutton);
         yes=(Button)findViewById(R.id.savebutton);
         no.setOnClickListener(this);
@@ -60,20 +68,17 @@ public class SavePopupDialog extends Dialog implements android.view.View.OnClick
             case R.id.cancelbutton:
                 SharedPreferenceClass.getInstance(getContext()).write(SharedPreferenceClass.savegamescore,0);
                 SharedPreferenceClass.getInstance(getContext()).writeBoolean(SharedPreferenceClass.isSave,false);
-
                 //SharedPreferenceClass.getInstance(getContext()).writeBoolean(SharedPreferenceClass.isPopupActive,false);
-                Utilclass.isSavePopActive =false;
+                //Utilclass.isSavePopActive =false;
                 popupCallBackFragmentInterface.onCallBack(tag);
-
                 dismiss();
 
                 break;
             case R.id.savebutton:
                 SharedPreferenceClass.getInstance(getContext()).writeBoolean(SharedPreferenceClass.isSave,true);
                 Toast.makeText(getContext(),"Data Saved",Toast.LENGTH_SHORT).show();
-
                 //SharedPreferenceClass.getInstance(getContext()).writeBoolean(SharedPreferenceClass.isPopupActive,false);
-                Utilclass.isSavePopActive =false;
+                //Utilclass.isSavePopActive =false;
                 dismiss();
                 popupCallBackFragmentInterface.onCallBack(tag);
 
@@ -82,10 +87,9 @@ public class SavePopupDialog extends Dialog implements android.view.View.OnClick
                 //dismissvar =0 true;
                 //SharedPreferenceClass.getInstance(getContext()).
                 // writeBoolean(SharedPreferenceClass.isPopupActive,false);
-                Utilclass.isSavePopActive =false;
+                //Utilclass.isSavePopActive =false;
                 dismiss();
                 gameViewInterface.runHandler();
-
                 break;
         }
 

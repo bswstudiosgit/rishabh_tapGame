@@ -29,4 +29,7 @@
     <dimen name="marginvalue12">12dp</dimen>
     <dimen name="marginvalue280">280dp</dimen>
     <dimen name="marginvalue2dp">2dp</dimen>
+    <dimen name="nativelayouticon">60dp</dimen>
+    <dimen name="nativeadheading">16sp</dimen>
+    <dimen name="nativemediaview">180dp</dimen>
 </resources>

@@ -48,8 +48,11 @@ public class RewardAdPopupDialog extends Dialog {
         watch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 dismiss();
+                watch.setEnabled(false);
                 AdMobHandler.getInstance(activity).showRewardAd();
+
             }
         });
         cancel.setOnClickListener(new View.OnClickListener() {
@@ -57,6 +60,7 @@ public class RewardAdPopupDialog extends Dialog {
             public void onClick(View v) {
                 //GameOver Fragment.
                 dismiss();
+
                 Bundle bundle = new Bundle();
                 if (fragmentActionListener != null ) {
 
