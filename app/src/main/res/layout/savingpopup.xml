@@ -67,6 +67,76 @@
         android:layout_marginTop="@dimen/marginvalue2"
         app:layout_constraintStart_toEndOf="@id/cancelbutton"
         />
+    <View
+        android:id="@id/line3"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/linecolor"
+        app:layout_constraintTop_toBottomOf="@+id/cancelbutton"
+        android:layout_marginTop="@dimen/marginvalue12"
+        tools:layout_editor_absoluteX="9dp" />
+    <androidx.constraintlayout.widget.ConstraintLayout
 
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        app:layout_constraintTop_toBottomOf="@+id/line3"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <!--
+            <TextView
+                android:layout_marginTop="@dimen/marginvalue12"
+                android:gravity="center_horizontal"
+                android:padding="@dimen/marginvalue5dp"
+                android:textSize="@dimen/textsizevalue2"
+                android:text="@string/exitdialog"
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            </TextView>
+        -->
+
+              <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/ad_container2"
+                android:layout_margin="@dimen/closebuttonsize"
+                android:elevation="3dp"
+                >
+            </androidx.cardview.widget.CardView>
+            <!--
+            <LinearLayout
+                android:layout_marginTop="@dimen/marginvalue12"
+                android:padding="@dimen/paddingsmallvalue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_horizontal"
+                >
+                <Button
+                    android:id="@+id/exitbutton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/yes"
+                    android:background="@drawable/greenpanel"
+                    />
+                <Button
+                    android:background="@drawable/orangecolorpanel"
+                    android:id="@+id/cancelbutton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/no"/>
+
+
+
+
+            </LinearLayout>-->
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

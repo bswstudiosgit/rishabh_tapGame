@@ -3,7 +3,6 @@ package com.rishabhmatharoo.blacklight.CustomDialog;
 import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +12,13 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 
+import androidx.cardview.widget.CardView;
+
+import com.rishabhmatharoo.blacklight.AdHandler.AdMobHandler;
 import com.rishabhmatharoo.blacklight.Interfaces.GameViewInterface;
 import com.rishabhmatharoo.blacklight.Interfaces.PopupCallBackFragmentInterface;
 import com.rishabhmatharoo.blacklight.Preference.SharedPreferenceClass;
 import com.rishabhmatharoo.blacklight.R;
-import com.rishabhmatharoo.blacklight.Util.Utilclass;
 
 public class SavePopupDialog extends Dialog implements android.view.View.OnClickListener{
     public Activity main;
@@ -25,6 +26,7 @@ public class SavePopupDialog extends Dialog implements android.view.View.OnClick
     public boolean dismissvar=false;
     String tag="gameview";
     String tag2="Resume";
+    CardView cardView;
     PopupCallBackFragmentInterface popupCallBackFragmentInterface;
     GameViewInterface gameViewInterface;
     private int certainbottomvalue=5;
@@ -44,7 +46,7 @@ public class SavePopupDialog extends Dialog implements android.view.View.OnClick
                 params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
 
                 //Log.d("gravitytop",""+Gravity.CENTER);
-                getWindow().setGravity(Gravity.TOP);
+                //getWindow().setGravity(Gravity.TOP);
                 getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
             }
         } catch (Exception e) {
@@ -56,8 +58,10 @@ public class SavePopupDialog extends Dialog implements android.view.View.OnClick
         yes=(Button)findViewById(R.id.savebutton);
         no.setOnClickListener(this);
         yes.setOnClickListener(this);
+        cardView=findViewById(R.id.ad_container2);
         ImageView close=(ImageView)findViewById(R.id.closebtn);
         close.setOnClickListener(this);
+        showNativeAdDialog();
 
     }
 
@@ -117,6 +121,11 @@ public class SavePopupDialog extends Dialog implements android.view.View.OnClick
     }
     public void setGameViewInterFace(GameViewInterface gameViewInterFace1){
         this.gameViewInterface=gameViewInterFace1;
+    }
+    private void showNativeAdDialog(){
+
+        //Here we will show the Ad
+        AdMobHandler.getInstance(main).showNativeAd(cardView);
     }
 
 }

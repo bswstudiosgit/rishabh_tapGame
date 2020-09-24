@@ -1,15 +1,11 @@
 package com.rishabhmatharoo.blacklight.AdHandler;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -36,11 +32,10 @@ import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.android.gms.ads.rewarded.RewardedAdCallback;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.rishabhmatharoo.blacklight.Activity_Main;
-import com.rishabhmatharoo.blacklight.CustomDialog.ExitDialog;
 import com.rishabhmatharoo.blacklight.Interfaces.FragmentActionListener;
+import com.rishabhmatharoo.blacklight.Interfaces.RewardAdCallBack;
 import com.rishabhmatharoo.blacklight.Interfaces.TransactionCallBack;
 import com.rishabhmatharoo.blacklight.R;
-import com.rishabhmatharoo.blacklight.Util.Utilclass;
 
 public class AdMobHandler {
     private static AdMobHandler instance;
@@ -54,6 +49,7 @@ public class AdMobHandler {
     private String nativeAdUnitId="ca-app-pub-3940256099942544/2247696110";
     private String bannerAdId="ca-app-pub-3940256099942544/6300978111";
     public TransactionCallBack callBack;
+    private RewardAdCallBack rewardAdCallback;
     private AdMobHandler(Activity activity){
 
         this.activity=activity;
@@ -164,10 +160,16 @@ public class AdMobHandler {
         adLoader.loadAd(new AdRequest.Builder().build());
     }
     public void showNativeAd(CardView cardView){
-        UnifiedNativeAdView adView=(UnifiedNativeAdView)activity.getLayoutInflater().inflate(R.layout.native_ad_layout,null);
-        populateNativeAd(adView,nativeAd);
-        cardView.removeAllViews();
-        cardView.addView(adView);
+        //If ad is not loaded then nativeAd will has null value.
+        if(nativeAd!=null ){
+            UnifiedNativeAdView adView=(UnifiedNativeAdView)activity.getLayoutInflater().inflate(R.layout.native_ad_layout,null);
+            populateNativeAd(adView,nativeAd);
+            cardView.removeAllViews();
+            cardView.addView(adView);
+        }else{
+            cardView.setVisibility(View.GONE);
+        }
+
        // progressBar.setVisibility(View.INVISIBLE);
 
     }
@@ -242,9 +244,7 @@ public class AdMobHandler {
             public void onRewardedAdFailedToLoad(LoadAdError adError) {
                 // Ad failed to load.
                 Log.d("RewardAd","Ad load failed");
-                //This boolean will not let Reward Ad popup to be displayed.
-                Utilclass.hasAlreadytakenreward=true;
-
+                rewardAdCallback.onRewardAdFailedToLoad();
             }
         };
         rewardedAd.loadAd(new AdRequest.Builder().build(), adLoadCallback);
@@ -257,33 +257,14 @@ public class AdMobHandler {
                 public void onRewardedAdOpened() {
                     // Ad opened.
                 }
-
                 @Override
                 public void onRewardedAdClosed() {
                     // Ad closed.
-                    if(!Utilclass.hasAlreadytakenreward){
-
-                       /* Bundle bundle = new Bundle();
-                        if (fragmentActionListener != null ) {
-                            bundle.putString(FragmentActionListener.FRAGMENT_NAME, "GameOver");
-                            bundle.putInt("FinalScore", Utilclass.finalScoreDuringRewardAd);
-                            fragmentActionListener.onFragmentSelected(bundle);
-                        }
-
-                        */
                        callBack.onScreentransaction();
-                    }
-
                 }
-
                 @Override
                 public void onUserEarnedReward(@NonNull RewardItem reward) {
-                    // User earned reward.
-                    Log.d("Reward",""+reward.getAmount());
-                    Utilclass.hasAlreadytakenreward=true;
-                    Utilclass.rewardAdPopupActive=false;
-                        Log.d("ExitGameDialog","Dismiss");
-                        //new ExitDialog(activity).dismiss();
+                   rewardAdCallback.onRewardAdEarned();
                 }
 
                 @Override
@@ -294,11 +275,15 @@ public class AdMobHandler {
             rewardedAd.show(activity, adCallback);
         } else {
             Log.d("TAG", "The rewarded ad wasn't loaded yet.");
+            loadRewardAd();
         }
 
     }
     public void setCallBackReference(TransactionCallBack transactionCallBack){
         this.callBack=transactionCallBack;
+    }
+    public void setRewardAdCallBack(RewardAdCallBack rewardAdCallBack){
+        this.rewardAdCallback=rewardAdCallBack;
     }
 
 }
