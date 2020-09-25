@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -99,10 +100,14 @@ public class HomeScreen extends Fragment {
         play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                    Log.d("HomeScreenListener","yes working");
                      SharedPreferenceClass.getInstance(getContext()).writeBoolean(SharedPreferenceClass.isSave,false);
                       if(fragmentActionListener!=null && !isStateSaved()){
-                          AdMobHandler.getInstance(getActivity()).showIntertitialAd();
+                          if(AdMobHandler.getInstance(getActivity()).hasInterstitialAdForGameView()){
+                              AdMobHandler.getInstance(getActivity()).showIntertitialAd();
+                              AdMobHandler.getInstance(getActivity()).decrementNumberOfInterstitialLoad();
+                          }
+
                           Bundle bundle=new Bundle();
                           bundle.putString(FragmentActionListener.FRAGMENT_NAME,"GameView");
                           fragmentActionListener.onFragmentSelected(bundle);

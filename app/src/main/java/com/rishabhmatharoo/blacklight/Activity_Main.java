@@ -52,6 +52,7 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
     GameViewInterface gameViewInterface;
     int cachetime=3600;
     private String bannerAdId="ca-app-pub-3940256099942544/6300978111";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,11 +82,12 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
             splashScreenFragment.setFragmentActionListener4(this);
             ft.replace(R.id.yourfragment, splashScreenFragment);
           //  ft.addToBackStack("splashscreen");
-
             ft.commit();
         }
+        AdMobHandler.getInstance(this).loadBannerAd();
 
-        AdMobHandler.getInstance(Activity_Main.this).loadBannerAd();
+
+
 
     }
 
@@ -94,7 +96,9 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
     @Override
     protected void onResume() {
         super.onResume();
+
         fullScreenCall();
+
 
     }
     private void saveInSharedPrefrence(){
@@ -301,12 +305,12 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
                 if (task.isSuccessful()) {
                     boolean updated = task.getResult();
                     Log.d(TAG, "Config params updated: " + updated);
-                    Toast.makeText(Activity_Main.this, "Fetch and activate succeeded",
-                            Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(Activity_Main.this, "Fetch and activate succeeded",
+                      //      Toast.LENGTH_SHORT).show();
 
                 } else {
-                    Toast.makeText(Activity_Main.this, "Fetch failed",
-                            Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(Activity_Main.this, "Fetch failed",
+                      //      Toast.LENGTH_SHORT).show();
                 }
                 saveInSharedPrefrence();
             }
@@ -316,8 +320,17 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         AdMobHandler.getInstance(this).destroyNativeAds();
+        AdMobHandler.getInstance(this).destroyBannerAd();
     }
+
+
 }

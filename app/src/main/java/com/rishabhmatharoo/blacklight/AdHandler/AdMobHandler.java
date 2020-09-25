@@ -1,13 +1,16 @@
 package com.rishabhmatharoo.blacklight.AdHandler;
 
 import android.app.Activity;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -50,6 +53,9 @@ public class AdMobHandler {
     private String bannerAdId="ca-app-pub-3940256099942544/6300978111";
     public TransactionCallBack callBack;
     private RewardAdCallBack rewardAdCallback;
+    private int numberOfInterstialLoad=0;
+
+    AdView bannerad;
     private AdMobHandler(Activity activity){
 
         this.activity=activity;
@@ -71,27 +77,60 @@ public class AdMobHandler {
         return instance;
     }
     public void loadBannerAd(){
-        AdView bannerad=new AdView(activity);
+
+        bannerad=new AdView(activity);
         bannerad.setAdUnitId(bannerAdId);
-        bannerad.setAdSize(AdSize.SMART_BANNER);
-        LinearLayout layout = (LinearLayout)activity.findViewById(R.id.adView);
-        layout.addView(bannerad);
+        AdSize adSize=getAdSize();
+        bannerad.setAdSize(adSize);
 
         AdRequest adRequest = new AdRequest.Builder().build();
         bannerad.loadAd(adRequest);
+        LinearLayout layout = activity.findViewById(R.id.adView);
         bannerad.setAdListener(new AdListener(){
-            @Override
-            public void onAdFailedToLoad(LoadAdError adError) {
-                // Code to be executed when an ad request fails.
-                Log.d("BannerAd",adError.toString());
-            }
             @Override
             public void onAdLoaded() {
                 // Code to be executed when an ad finishes loading.
-                Log.d("BannerAd","Finish");
+                Toast.makeText(activity.getApplicationContext(),"Banner: Ad is Loaded",Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAdFailedToLoad(LoadAdError adError) {
+                // Code to be executed when an ad request fails.
+                Toast.makeText(activity.getApplicationContext(),"Banner: Ad is failed to load error"+adError.toString(),Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAdOpened() {
+                // Code to be executed when an ad opens an overlay that
+                // covers the screen.
+                Toast.makeText(activity.getApplicationContext(),"Banner: Ad is Opened",Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAdClicked() {
+                // Code to be executed when the user clicks on an ad.
+                Toast.makeText(activity.getApplicationContext(),"Banner: Ad is Clicked",Toast.LENGTH_SHORT).show();
             }
 
         });
+
+        layout.removeAllViews();
+        layout.addView(bannerad);
+
+    }
+    private AdSize getAdSize() {
+        // Step 2 - Determine the screen width (less decorations) to use for the ad width.
+        Display display = activity.getWindowManager().getDefaultDisplay();
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        display.getMetrics(outMetrics);
+
+        float widthPixels = outMetrics.widthPixels;
+        float density = outMetrics.density;
+
+        int adWidth = (int) (widthPixels / density);
+
+        // Step 3 - Get adaptive ad size and return for setting on the ad view.
+        return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(activity, adWidth);
     }
     public void loadIntertitialAd(){
         mInterstitialAd = new InterstitialAd(activity.getApplicationContext());
@@ -101,25 +140,45 @@ public class AdMobHandler {
                 @Override
                 public void onAdFailedToLoad(LoadAdError adError) {
                     // Code to be executed when an ad request fails.
-                    Log.d("InterstialAd",adError.toString());
+                    Toast.makeText(activity.getApplicationContext(),"Interstitial: Ad is Failed to load"+adError.toString(),Toast.LENGTH_SHORT).show();
                 }
                 @Override
                 public void onAdLoaded() {
                     // Code to be executed when an ad finishes loading.
+                    Toast.makeText(activity.getApplicationContext(),"Interstitial: Ad is Loaded",Toast.LENGTH_SHORT).show();
                     Log.d("InterstialAd","Finish");
+                    numberOfInterstialLoad++;
                 }
                 @Override
                  public void onAdClosed() {
                 // Load the next interstitial.
+
+                    Toast.makeText(activity.getApplicationContext(),"Interstitial: Ad is Closed",Toast.LENGTH_SHORT).show();
                 mInterstitialAd.loadAd(new AdRequest.Builder().build());
             }
+            @Override
+            public void onAdClicked() {
+                // Code to be executed when the user clicks on an ad.
+                Toast.makeText(activity.getApplicationContext(),"Interstitial: Ad is Clicked",Toast.LENGTH_SHORT).show();
+            }
         });
+    }
+    public boolean isInterstitialAdLoaded(){
+        return mInterstitialAd.isLoaded();
+    }
+    public boolean hasInterstitialAdForGameView(){
+        if(numberOfInterstialLoad>=2){
+            numberOfInterstialLoad=0;
+            return true;
+        }
+        return false;
+    }
+    public void decrementNumberOfInterstitialLoad(){
+        numberOfInterstialLoad--;
     }
     public void showIntertitialAd(){
         if (mInterstitialAd != null && mInterstitialAd.isLoaded()) {
             mInterstitialAd.show();
-        } else {
-            loadAgainInterstitial();
         }
 
     }
@@ -127,6 +186,24 @@ public class AdMobHandler {
         if (!mInterstitialAd.isLoading() && !mInterstitialAd.isLoaded()) {
             AdRequest adRequest = new AdRequest.Builder().build();
             mInterstitialAd.loadAd(adRequest);
+            mInterstitialAd.setAdListener(new AdListener(){
+                @Override
+                public void onAdFailedToLoad(LoadAdError adError) {
+                    // Code to be executed when an ad request fails.
+                    Log.d("InterstialAd",adError.toString());
+                    showIntertitialAd();
+                }
+                @Override
+                public void onAdLoaded() {
+                    // Code to be executed when an ad finishes loading.
+                   // Log.d("InterstialAd","Finish");
+                }
+                @Override
+                public void onAdClosed() {
+                    // Load the next interstitial.
+                    mInterstitialAd.loadAd(new AdRequest.Builder().build());
+                }
+            });
         }
     }
     public void loadNativeAd(){
@@ -150,6 +227,18 @@ public class AdMobHandler {
                     public void onAdFailedToLoad(LoadAdError adError) {
                         // Handle the failure by logging, altering the UI, and so on.
                         //progressBar.setVisibility(View.INVISIBLE);
+                        //loadNativeAd();
+
+                        Toast.makeText(activity.getApplicationContext(),"NativeAd Failed"+adError.toString(),Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public void onAdLoaded() {
+                        // Code to be executed when an ad finishes loading.
+                        Toast.makeText(activity.getApplicationContext(),"NativeAd Loaded",Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public void onAdClosed() {
+                        Toast.makeText(activity.getApplicationContext(),"NativeAd Closed",Toast.LENGTH_SHORT).show();
                     }
                 })
                 .withNativeAdOptions(new NativeAdOptions.Builder()
@@ -229,6 +318,9 @@ public class AdMobHandler {
 
         }
     }
+    public void destroyBannerAd(){
+        bannerad.destroy();
+    }
     public void loadRewardAd(){
         rewardedAd = new RewardedAd(activity,
                 rewardAdUnitId);
@@ -237,6 +329,7 @@ public class AdMobHandler {
             public void onRewardedAdLoaded() {
                 // Ad successfully loaded.
                 Log.d("RewardAd","Ad is loaded Completed");
+                Toast.makeText(activity.getApplicationContext(),"RewardAdLoaded",Toast.LENGTH_SHORT).show();
 
             }
 
@@ -245,6 +338,7 @@ public class AdMobHandler {
                 // Ad failed to load.
                 Log.d("RewardAd","Ad load failed");
                 rewardAdCallback.onRewardAdFailedToLoad();
+                Toast.makeText(activity.getApplicationContext(),"RewardAdFailedToLoad",Toast.LENGTH_SHORT).show();
             }
         };
         rewardedAd.loadAd(new AdRequest.Builder().build(), adLoadCallback);

@@ -55,6 +55,7 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
     SavePopupDialog dialog;
     private RemoteColorModel remoteColorModel;
     private String handlerTimer="";
+    private Handler refreshNativeAdHandler=new Handler();
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup group,Bundle savedInstanceState) {
         gameViewInterface=this;
@@ -65,6 +66,7 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
         Log.d("remoteHandlerTime",handlerTimer);
         //Load Reward Ad in onCreateView Method.
         AdMobHandler.getInstance(getActivity()).loadRewardAd();
+
         AdMobHandler.getInstance(getActivity()).setCallBackReference(new TransactionCallBack() {
             @Override
             public void onScreentransaction() {
@@ -96,7 +98,7 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
     }
     @Override
     public void onViewCreated(View view,Bundle savedInstance){
-        dialog=new SavePopupDialog(getActivity());
+        dialog=new SavePopupDialog(getActivity(),refreshNativeAdHandler);
         Log.d("GameView","Yes this is calling");
         orangecolor = (ImageView)view.findViewById(R.id.orangecolorid);
         bluecolor =(ImageView) view.findViewById(R.id.bluecolorid);
@@ -151,7 +153,8 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
                 //Utilclass.isSavePopActive=true;
                 if(!new RewardAdPopupDialog(getActivity()).isShowing()) {
                     isSavePopupActive = true;
-                    SavePopupDialog dialog = new SavePopupDialog(getActivity());
+
+                    SavePopupDialog dialog = new SavePopupDialog(getActivity(),refreshNativeAdHandler);
                     dialog.setCancelable(false);
                     dialog.setPopupCallBackFragmentInterface(popupCallBackFragmentInterface);
                     dialog.setGameViewInterFace(gameViewInterface);
@@ -231,6 +234,7 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
     @Override
     public void onPause() {
       handler.removeCallbacksAndMessages(null);
+      refreshNativeAdHandler.removeCallbacksAndMessages(null);
         super.onPause();
         isPausedapplication=true;
         finalscoreduringpausedgame=finalscore;
@@ -489,15 +493,18 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
         isSavePopupActive=false;
     }
 
-    public void openpopup(){
 
+
+    public void openpopup(){
         SharedPreferenceClass.getInstance(getContext()).write(SharedPreferenceClass.savegamescore, finalscore);
         SharedPreferenceClass.getInstance(getContext()).write(SharedPreferenceClass.colornum,colornumber);
        //SharedPreferenceClass.getInstance(getContext()).writeBoolean(SharedPreferenceClass.isPopupActive,true);
         isSavePopupActive=true;
         //Utilclass.isSavePopActive=true;
         if(!new RewardAdPopupDialog(getActivity()).isShowing()) {
-            dialog = new SavePopupDialog(getActivity());
+
+            AdMobHandler.getInstance(getActivity()).loadNativeAd();
+            dialog = new SavePopupDialog(getActivity(),refreshNativeAdHandler);
             dialog.setPopupCallBackFragmentInterface(popupCallBackFragmentInterface);
             dialog.setGameViewInterFace(gameViewInterface);
 

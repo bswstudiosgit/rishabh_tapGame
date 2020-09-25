@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.ads.InterstitialAd;
 import com.rishabhmatharoo.blacklight.Activity_Main;
+import com.rishabhmatharoo.blacklight.AdHandler.AdMobHandler;
 import com.rishabhmatharoo.blacklight.Interfaces.FragmentActionListener;
 import com.rishabhmatharoo.blacklight.R;
 import com.rishabhmatharoo.blacklight.Preference.SharedPreferenceClass;
@@ -27,7 +28,9 @@ public class GameOverFragment extends Fragment {
        if(this.getArguments()!=null){
            finalscore=this.getArguments().getInt("FinalScore");
        }
-
+        AdMobHandler.getInstance(getActivity()).showIntertitialAd();
+       if(!AdMobHandler.getInstance(getActivity()).isInterstitialAdLoaded())
+           AdMobHandler.getInstance(getActivity()).loadIntertitialAd();
         return inflater.inflate(R.layout.gameoverscreen,parent,false);
     }
     public void setFragmentActionListener2(FragmentActionListener fragmentActionListener1){

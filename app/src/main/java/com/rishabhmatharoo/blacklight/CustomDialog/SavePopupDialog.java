@@ -3,6 +3,7 @@ package com.rishabhmatharoo.blacklight.CustomDialog;
 import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.cardview.widget.CardView;
 
+import com.rishabhmatharoo.blacklight.Activity_Main;
 import com.rishabhmatharoo.blacklight.AdHandler.AdMobHandler;
 import com.rishabhmatharoo.blacklight.Interfaces.GameViewInterface;
 import com.rishabhmatharoo.blacklight.Interfaces.PopupCallBackFragmentInterface;
@@ -29,16 +31,20 @@ public class SavePopupDialog extends Dialog implements android.view.View.OnClick
     CardView cardView;
     PopupCallBackFragmentInterface popupCallBackFragmentInterface;
     GameViewInterface gameViewInterface;
-    private int certainbottomvalue=5;
-    public SavePopupDialog(Activity activity){
+    private int certainbottomvalue=5,nativeadRefreshingTime=120000;
+    private Handler refreshnativead;
+    //Passing dependency injection of handler in the constructor
+    public SavePopupDialog(Activity activity,Handler refreshhandler){
         super(activity);
         this.main=activity;
+        this.refreshnativead=refreshhandler;
     }
     @Override
      protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.savingpopup);
+
         try {
             ViewGroup.LayoutParams params = getWindow().getAttributes();
             if (params != null) {
@@ -75,6 +81,7 @@ public class SavePopupDialog extends Dialog implements android.view.View.OnClick
                 //SharedPreferenceClass.getInstance(getContext()).writeBoolean(SharedPreferenceClass.isPopupActive,false);
                 //Utilclass.isSavePopActive =false;
                 popupCallBackFragmentInterface.onCallBack(tag);
+                refreshNativeAd();
                 dismiss();
 
                 break;
@@ -84,6 +91,7 @@ public class SavePopupDialog extends Dialog implements android.view.View.OnClick
                 //SharedPreferenceClass.getInstance(getContext()).writeBoolean(SharedPreferenceClass.isPopupActive,false);
                 //Utilclass.isSavePopActive =false;
                 dismiss();
+                refreshNativeAd();
                 popupCallBackFragmentInterface.onCallBack(tag);
 
                 break;
@@ -93,6 +101,7 @@ public class SavePopupDialog extends Dialog implements android.view.View.OnClick
                 // writeBoolean(SharedPreferenceClass.isPopupActive,false);
                 //Utilclass.isSavePopActive =false;
                 dismiss();
+                refreshNativeAd();
                 gameViewInterface.runHandler();
                 break;
         }
@@ -127,5 +136,19 @@ public class SavePopupDialog extends Dialog implements android.view.View.OnClick
         //Here we will show the Ad
         AdMobHandler.getInstance(main).showNativeAd(cardView);
     }
+    public void refreshNativeAd(){
+        /*
+        refreshnativead.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                AdMobHandler.getInstance(main).loadNativeAd();
+            }
+        },nativeadRefreshingTime);
+
+         */
+        AdMobHandler.getInstance(main).loadNativeAd();
+    }
+
+
 
 }
