@@ -104,7 +104,9 @@ public class HomeScreen extends Fragment {
                     Log.d("HomeScreenListener","yes working");
                      SharedPreferenceClass.getInstance(getContext()).writeBoolean(SharedPreferenceClass.isSave,false);
                       if(fragmentActionListener!=null && !isStateSaved()){
-                          if(AdMobHandler.getInstance(getActivity()).hasInterstitialAdForGameView()){
+                          int num=Integer.parseInt(SharedPreferenceClass.getInstance(getContext()).readInterstitialFrequency()==""?"2":
+                                  SharedPreferenceClass.getInstance(getContext()).readInterstitialFrequency());
+                          if(AdMobHandler.getInstance(getActivity()).hasInterstitialAdForGameView(num)){
                               AdMobHandler.getInstance(getActivity()).showIntertitialAd();
                               AdMobHandler.getInstance(getActivity()).decrementNumberOfInterstitialLoad();
                           }

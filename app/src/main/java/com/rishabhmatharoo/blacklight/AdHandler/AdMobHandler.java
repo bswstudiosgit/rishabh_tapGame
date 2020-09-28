@@ -39,6 +39,7 @@ import com.rishabhmatharoo.blacklight.Activity_Main;
 import com.rishabhmatharoo.blacklight.Interfaces.FragmentActionListener;
 import com.rishabhmatharoo.blacklight.Interfaces.RewardAdCallBack;
 import com.rishabhmatharoo.blacklight.Interfaces.TransactionCallBack;
+import com.rishabhmatharoo.blacklight.Preference.SharedPreferenceClass;
 import com.rishabhmatharoo.blacklight.R;
 
 public class AdMobHandler {
@@ -184,8 +185,8 @@ public class AdMobHandler {
     public boolean isInterstitialAdLoaded(){
         return mInterstitialAd.isLoaded();
     }
-    public boolean hasInterstitialAdForGameView(){
-        if(numberOfInterstialLoad>=2){
+    public boolean hasInterstitialAdForGameView(int num){
+        if(numberOfInterstialLoad>=num){
             numberOfInterstialLoad=0;
             return true;
         }

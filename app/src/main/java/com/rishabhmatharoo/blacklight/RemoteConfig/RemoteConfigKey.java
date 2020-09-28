@@ -8,4 +8,5 @@ public class RemoteConfigKey {
     public static String color5="colour5";
     public static String handlertimer="handlerTimer";
     public static String ColorValue="ColorValue";
+    public static String Interstitialkey="InterstitialFreq";
 }

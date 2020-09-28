@@ -17,6 +17,7 @@ public class SharedPreferenceClass {
     public static String handlertime="HandlerTimer";
     public static String colorvalues="ColorValue";
     public static String BgMusic="BgMusic";
+    public static String interstitialFreq="InterstitialFrequency";
     public static String ColorDefaultValues="{\"colour1\":\"#ff0000\",\"colour2\":\"#00ff00\",\"colour3\":\"#0000ff\",\"colour4\":\"#FFFF00\"}";
 private SharedPreferenceClass(Context context)
     {
@@ -72,6 +73,12 @@ private SharedPreferenceClass(Context context)
     SharedPreferences.Editor prefsEditor=mSharedPref.edit();
     prefsEditor.putString(BgMusic,value).apply();
     }
-
+    public void writeInterstitialFrequency(String value){
+        SharedPreferences.Editor prefsEditor=mSharedPref.edit();
+        prefsEditor.putString(interstitialFreq,value).apply();
+    }
+    public String readInterstitialFrequency(){
+        return mSharedPref.getString(interstitialFreq,"2");
+    }
 
 }

@@ -63,7 +63,7 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        loadRcValues(0);
+        loadRcValues(cachetime);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -95,17 +95,7 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
         adContainerView = findViewById(R.id.adView);
 
         AdMobHandler.getInstance(this).loadBannerAd(adContainerView);
-        /*
-        // Since we're loading the banner based on the adContainerView size, we need to wait until this
-        // view is laid out before we can get the width.
-        adContainerView.post(new Runnable() {
-            @Override
-            public void run() {
-                loadBanner();
-            }
-        });
 
-         */
     }
 
     @Override
@@ -123,6 +113,7 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
         SharedPreferenceClass.getInstance(this).writeHandlerTimer(Handlertime);
         String value=firebaseRemoteConfig.getString("BG_Var1");
         SharedPreferenceClass.getInstance(this).writeBgMusic(value);
+        SharedPreferenceClass.getInstance(this).writeInterstitialFrequency(firebaseRemoteConfig.getString(RemoteConfigKey.Interstitialkey));
         Log.d("RemoteHandlerTime",Handlertime);
         Log.d("Bgvar",firebaseRemoteConfig.getString("BG_Var1"));
 
