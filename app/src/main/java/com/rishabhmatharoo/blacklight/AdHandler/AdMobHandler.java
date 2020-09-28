@@ -207,6 +207,33 @@ public class AdMobHandler {
         interstitialAdVideo = new InterstitialAd(activity.getApplicationContext());
         interstitialAdVideo.setAdUnitId(interstitialAdUnitId);
         interstitialAdVideo.loadAd(new AdRequest.Builder().build());
+        interstitialAdVideo.setAdListener( new AdListener(){
+            @Override
+            public void onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+                Toast.makeText(activity.getApplicationContext(), "Video: Ad is Loaded", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAdFailedToLoad(LoadAdError adError) {
+                // Code to be executed when an ad request fails.
+                Toast.makeText(activity.getApplicationContext(), "Video: Ad is failed to load error" + adError.toString(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAdOpened() {
+                // Code to be executed when an ad opens an overlay that
+                // covers the screen.
+                Toast.makeText(activity.getApplicationContext(), "Video: Ad is Opened", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAdClicked() {
+                // Code to be executed when the user clicks on an ad.
+                Toast.makeText(activity.getApplicationContext(), "Video: Ad is Clicked", Toast.LENGTH_SHORT).show();
+            }
+
+        });
     }
     public void showInterstitialVideoAd(){
         if(interstitialAdVideo!=null && interstitialAdVideo.isLoaded()){

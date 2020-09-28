@@ -74,6 +74,7 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
         */
         AdMobHandler.getInstance(Activity_Main.this).loadIntertitialAd();
         AdMobHandler.getInstance(Activity_Main.this).loadNativeAd();
+
         View overlay = findViewById(R.id.popupview);
 
         overlay.setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
@@ -95,7 +96,7 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
         adContainerView = findViewById(R.id.adView);
 
         AdMobHandler.getInstance(this).loadBannerAd(adContainerView);
-
+        AdMobHandler.getInstance(this).loadInterstitialVideoAd();
     }
 
     @Override
