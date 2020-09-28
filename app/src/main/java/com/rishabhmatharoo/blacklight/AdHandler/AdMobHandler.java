@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
@@ -54,6 +55,7 @@ public class AdMobHandler {
     public TransactionCallBack callBack;
     private RewardAdCallBack rewardAdCallback;
     private int numberOfInterstialLoad=0;
+    private FrameLayout bannerLayout;
 
     AdView bannerad;
     private AdMobHandler(Activity activity){
@@ -76,47 +78,63 @@ public class AdMobHandler {
         }
         return instance;
     }
-    public void loadBannerAd(){
-
-        bannerad=new AdView(activity);
-        bannerad.setAdUnitId(bannerAdId);
-        AdSize adSize=getAdSize();
-        bannerad.setAdSize(adSize);
-
-        AdRequest adRequest = new AdRequest.Builder().build();
-        bannerad.loadAd(adRequest);
-        LinearLayout layout = activity.findViewById(R.id.adView);
-        bannerad.setAdListener(new AdListener(){
+    public void loadBannerAd(final FrameLayout layout){
+        this.bannerLayout=layout;
+          layout.post(new Runnable() {
             @Override
-            public void onAdLoaded() {
-                // Code to be executed when an ad finishes loading.
-                Toast.makeText(activity.getApplicationContext(),"Banner: Ad is Loaded",Toast.LENGTH_SHORT).show();
-            }
+            public void run() {
+                bannerad = new AdView(activity);
+                bannerad.setAdUnitId(bannerAdId);
 
-            @Override
-            public void onAdFailedToLoad(LoadAdError adError) {
-                // Code to be executed when an ad request fails.
-                Toast.makeText(activity.getApplicationContext(),"Banner: Ad is failed to load error"+adError.toString(),Toast.LENGTH_SHORT).show();
-            }
+                layout.removeAllViews();
+                layout.addView(bannerad);
+                AdSize adSize = getAdSize();
+                bannerad.setAdSize(adSize);
+                AdRequest adRequest = new AdRequest.Builder().build();
+                bannerad.loadAd(adRequest);
+                bannerad.setAdListener(new AdListener() {
+                    @Override
+                    public void onAdLoaded() {
+                        // Code to be executed when an ad finishes loading.
+                        Toast.makeText(activity.getApplicationContext(), "Banner: Ad is Loaded", Toast.LENGTH_SHORT).show();
+                    }
 
-            @Override
-            public void onAdOpened() {
-                // Code to be executed when an ad opens an overlay that
-                // covers the screen.
-                Toast.makeText(activity.getApplicationContext(),"Banner: Ad is Opened",Toast.LENGTH_SHORT).show();
-            }
+                    @Override
+                    public void onAdFailedToLoad(LoadAdError adError) {
+                        // Code to be executed when an ad request fails.
+                        Toast.makeText(activity.getApplicationContext(), "Banner: Ad is failed to load error" + adError.toString(), Toast.LENGTH_SHORT).show();
+                    }
 
-            @Override
-            public void onAdClicked() {
-                // Code to be executed when the user clicks on an ad.
-                Toast.makeText(activity.getApplicationContext(),"Banner: Ad is Clicked",Toast.LENGTH_SHORT).show();
-            }
+                    @Override
+                    public void onAdOpened() {
+                        // Code to be executed when an ad opens an overlay that
+                        // covers the screen.
+                        Toast.makeText(activity.getApplicationContext(), "Banner: Ad is Opened", Toast.LENGTH_SHORT).show();
+                    }
 
+                    @Override
+                    public void onAdClicked() {
+                        // Code to be executed when the user clicks on an ad.
+                        Toast.makeText(activity.getApplicationContext(), "Banner: Ad is Clicked", Toast.LENGTH_SHORT).show();
+                    }
+
+                });
+            }
         });
-
-        layout.removeAllViews();
-        layout.addView(bannerad);
-
+    }
+    public void resumeBannerAd(){
+        if(bannerad!=null) {
+            Log.d("BannerAd","onresume");
+            bannerad.resume();
+            bannerLayout.setVisibility(View.VISIBLE);
+        }
+    }
+    public void pauseBannerAd(){
+        if(bannerad!=null) {
+            Log.d("BannerAd","onPause");
+            bannerad.pause();
+            bannerLayout.setVisibility(View.INVISIBLE);
+        }
     }
     private AdSize getAdSize() {
         // Step 2 - Determine the screen width (less decorations) to use for the ad width.
@@ -319,7 +337,9 @@ public class AdMobHandler {
         }
     }
     public void destroyBannerAd(){
-        bannerad.destroy();
+        if(bannerad!=null) {
+            bannerad.destroy();
+        }
     }
     public void loadRewardAd(){
         rewardedAd = new RewardedAd(activity,

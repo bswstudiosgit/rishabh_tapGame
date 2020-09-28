@@ -8,13 +8,18 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -52,6 +57,8 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
     GameViewInterface gameViewInterface;
     int cachetime=3600;
     private String bannerAdId="ca-app-pub-3940256099942544/6300978111";
+    private FrameLayout adContainerView;
+    private static final String AD_UNIT_ID = "ca-app-pub-3940256099942544/9214589741";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,20 +91,29 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
           //  ft.addToBackStack("splashscreen");
             ft.commit();
         }
-        AdMobHandler.getInstance(this).loadBannerAd();
 
+        adContainerView = findViewById(R.id.adView);
 
+        AdMobHandler.getInstance(this).loadBannerAd(adContainerView);
+        /*
+        // Since we're loading the banner based on the adContainerView size, we need to wait until this
+        // view is laid out before we can get the width.
+        adContainerView.post(new Runnable() {
+            @Override
+            public void run() {
+                loadBanner();
+            }
+        });
 
-
+         */
     }
-
-
 
     @Override
     protected void onResume() {
         super.onResume();
-
+        //AdMobHandler.getInstance(this).resumeBannerAd();
         fullScreenCall();
+        AdMobHandler.getInstance(this).resumeBannerAd();
 
 
     }
@@ -321,16 +337,59 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
 
     @Override
     protected void onPause() {
+
         super.onPause();
+        AdMobHandler.getInstance(this).pauseBannerAd();
+
     }
 
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
         AdMobHandler.getInstance(this).destroyNativeAds();
+        //AdMobHandler.getInstance(this).destroyBannerAd();
+        //adView.destroy();
         AdMobHandler.getInstance(this).destroyBannerAd();
+
+
+    }
+
+    private void loadBanner() {
+        // Create an ad request.
+        adView = new AdView(this);
+        adView.setAdUnitId(AD_UNIT_ID);
+        adContainerView.removeAllViews();
+        adContainerView.addView(adView);
+
+        AdSize adSize = getAdSize();
+        adView.setAdSize(adSize);
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+
+        // Start loading the ad in the background.
+        adView.loadAd(adRequest);
     }
 
 
+    private AdSize getAdSize() {
+        // Determine the screen width (less decorations) to use for the ad width.
+        Display display = getWindowManager().getDefaultDisplay();
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        display.getMetrics(outMetrics);
+
+        float density = outMetrics.density;
+
+        float adWidthPixels = adContainerView.getWidth();
+
+        // If the ad hasn't been laid out, default to the full screen width.
+        if (adWidthPixels == 0) {
+            adWidthPixels = outMetrics.widthPixels;
+        }
+
+        int adWidth = (int) (adWidthPixels / density);
+
+        return AdSize.getCurrentOrientationBannerAdSizeWithWidth(this, adWidth);
+    }
 }

@@ -26,6 +26,7 @@ public class SplashScreenFragment  extends Fragment {
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState){
+        AdMobHandler.getInstance(getActivity()).pauseBannerAd();
         return inflater.inflate(R.layout.splashscreen,parent,false);
     }
     @Override

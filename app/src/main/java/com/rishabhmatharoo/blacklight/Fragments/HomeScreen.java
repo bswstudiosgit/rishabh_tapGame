@@ -32,6 +32,7 @@ public class HomeScreen extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater,ViewGroup parent,Bundle savedInstanceState){
+        AdMobHandler.getInstance(getActivity()).resumeBannerAd();
         return inflater.inflate(R.layout.fragment_home_screen,parent,false);
 
     }
