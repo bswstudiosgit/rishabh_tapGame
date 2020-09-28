@@ -53,10 +53,12 @@ public class AdMobHandler {
     private String rewardAdUnitId="ca-app-pub-3940256099942544/5224354917";
     private String nativeAdUnitId="ca-app-pub-3940256099942544/2247696110";
     private String bannerAdId="ca-app-pub-3940256099942544/6300978111";
+    private String InterstitialVideoAdUnitId="ca-app-pub-3940256099942544/8691691433";
     public TransactionCallBack callBack;
     private RewardAdCallBack rewardAdCallback;
     private int numberOfInterstialLoad=0;
     private FrameLayout bannerLayout;
+    InterstitialAd interstitialAdVideo;
 
     AdView bannerad;
     private AdMobHandler(Activity activity){
@@ -200,6 +202,16 @@ public class AdMobHandler {
             mInterstitialAd.show();
         }
 
+    }
+    public void loadInterstitialVideoAd(){
+        interstitialAdVideo = new InterstitialAd(activity.getApplicationContext());
+        interstitialAdVideo.setAdUnitId(interstitialAdUnitId);
+        interstitialAdVideo.loadAd(new AdRequest.Builder().build());
+    }
+    public void showInterstitialVideoAd(){
+        if(interstitialAdVideo!=null && interstitialAdVideo.isLoaded()){
+            interstitialAdVideo.show();
+        }
     }
     public void loadAgainInterstitial(){
         if (!mInterstitialAd.isLoading() && !mInterstitialAd.isLoaded()) {
