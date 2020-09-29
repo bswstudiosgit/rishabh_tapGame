@@ -15,9 +15,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.gson.Gson;
 import com.rishabhmatharoo.blacklight.Activity.Activity_Main;
 import com.rishabhmatharoo.blacklight.AdHandler.AdMobHandler;
+import com.rishabhmatharoo.blacklight.Crashlytics.CrashlyticsTags;
 import com.rishabhmatharoo.blacklight.CustomDialog.RewardAdPopupDialog;
 import com.rishabhmatharoo.blacklight.Interfaces.FragmentActionListener;
 import com.rishabhmatharoo.blacklight.Interfaces.GameViewInterface;
@@ -93,6 +95,7 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
                 rewardAdFailedToLoad=true;
             }
         });
+        addCutomKeyInCrashlytics();
         return inflater.inflate(R.layout.gameviewfragment,group,false);
 
     }
@@ -534,4 +537,10 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
     }
 
 */
+
+    private void addCutomKeyInCrashlytics(){
+        FirebaseCrashlytics.getInstance().setCustomKey(CrashlyticsTags.ScreenTag,CrashlyticsTags.screen_name3);
+        FirebaseCrashlytics.getInstance().setCustomKey(CrashlyticsTags.BestScoreTag,SharedPreferenceClass.getInstance(getContext()).read(SharedPreferenceClass.BestScore));
+        CrashlyticsTags.screenTransitions=CrashlyticsTags.screenTransitions+" > Game";
+    }
 }

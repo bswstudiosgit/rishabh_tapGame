@@ -20,6 +20,7 @@ public class SharedPreferenceClass {
     public static String interstitialFreq="InterstitialFrequency";
     public static String playerExperience="PlayerExperience";
     public static String ColorDefaultValues="{\"colour1\":\"#ff0000\",\"colour2\":\"#00ff00\",\"colour3\":\"#0000ff\",\"colour4\":\"#FFFF00\"}";
+    public static String wrongkeyofbestscore="wrong";
 private SharedPreferenceClass(Context context)
     {
 
@@ -38,6 +39,9 @@ private SharedPreferenceClass(Context context)
     public Integer read(String key) {
 
         return mSharedPref.getInt(key, 0);
+    }
+    public String readnullvalue(String key){
+        return mSharedPref.getString(key, null);
     }
     public boolean readboolean(String key) {
 

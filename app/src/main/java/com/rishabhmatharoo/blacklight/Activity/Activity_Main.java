@@ -28,6 +28,7 @@ import com.google.firebase.installations.InstallationTokenResult;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.rishabhmatharoo.blacklight.AdHandler.AdMobHandler;
+import com.rishabhmatharoo.blacklight.Crashlytics.CrashlyticsTags;
 import com.rishabhmatharoo.blacklight.Fragments.GameOverFragment;
 import com.rishabhmatharoo.blacklight.Fragments.GameView;
 import com.rishabhmatharoo.blacklight.Fragments.HomeScreen;
@@ -164,6 +165,7 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
     public void onBackPressed() {
         final Fragment fragmentInFrame = getSupportFragmentManager().findFragmentById(R.id.yourfragment);
         if(fragmentInFrame instanceof HomeScreen){
+            CrashlyticsTags.screenTransitions=CrashlyticsTags.screenTransitions+" > Exit";
             this.finish();
             //ExitDialog dialog=new ExitDialog(this);
             //dialog.show();

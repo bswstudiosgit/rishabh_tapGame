@@ -8,11 +8,14 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.rishabhmatharoo.blacklight.AdHandler.AdMobHandler;
+import com.rishabhmatharoo.blacklight.Crashlytics.CrashlyticsTags;
 import com.rishabhmatharoo.blacklight.Interfaces.FragmentActionListener;
 import com.rishabhmatharoo.blacklight.Preference.SharedPreferenceClass;
 import com.rishabhmatharoo.blacklight.R;
@@ -26,7 +29,9 @@ public class SplashScreenFragment  extends Fragment {
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState){
+        //getSharedPreferenceBestScore();
         AdMobHandler.getInstance(getActivity()).pauseBannerAd();
+        addCutomKeyInCrashlytics();
         return inflater.inflate(R.layout.splashscreen,parent,false);
     }
     @Override
@@ -78,4 +83,21 @@ public class SplashScreenFragment  extends Fragment {
          */
 
     }
+    private void addCutomKeyInCrashlytics(){
+        FirebaseCrashlytics.getInstance().setCustomKey(CrashlyticsTags.ScreenTag,CrashlyticsTags.screen_name1);
+        FirebaseCrashlytics.getInstance().setCustomKey(CrashlyticsTags.BestScoreTag,SharedPreferenceClass.getInstance(getContext()).read(SharedPreferenceClass.BestScore));
+        CrashlyticsTags.screenTransitions="Splash";
+    }
+    private void getSharedPreferenceBestScore(){
+        try {
+            if(SharedPreferenceClass.getInstance(getContext()).readnullvalue(SharedPreferenceClass.wrongkeyofbestscore).isEmpty()){
+
+                //FirebaseCrashlytics.getInstance().log("Shared Preference Best Score Not Found");
+                throw new RuntimeException("Null Pointer Exception");
+            }
+        }catch (Exception e){
+            FirebaseCrashlytics.getInstance().setCustomKey("logs","Shared Preference Best Score Not Found");
+            FirebaseCrashlytics.getInstance().recordException(e);
         }
+    }
+}

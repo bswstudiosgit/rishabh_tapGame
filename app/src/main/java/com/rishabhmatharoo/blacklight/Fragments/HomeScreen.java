@@ -15,8 +15,10 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.rishabhmatharoo.blacklight.Activity.Activity_Main;
 import com.rishabhmatharoo.blacklight.AdHandler.AdMobHandler;
+import com.rishabhmatharoo.blacklight.Crashlytics.CrashlyticsTags;
 import com.rishabhmatharoo.blacklight.CustomDialog.ShowRcValueDialog;
 import com.rishabhmatharoo.blacklight.Interfaces.FragmentActionListener;
 import com.rishabhmatharoo.blacklight.Preference.SharedPreferenceClass;
@@ -36,6 +38,7 @@ public class HomeScreen extends Fragment {
     public View onCreateView(LayoutInflater inflater,ViewGroup parent,Bundle savedInstanceState){
         AdMobHandler.getInstance(getActivity()).resumeBannerAd();
         firebaseAnalytics=FirebaseAnalytics.getInstance(getContext());
+        addCutomKeyInCrashlytics();
         return inflater.inflate(R.layout.fragment_home_screen,parent,false);
 
     }
@@ -113,7 +116,7 @@ public class HomeScreen extends Fragment {
                           bundle2.putString(FirebaseAnalytics.Param.ITEM_ID, String.valueOf(1234345));
                           bundle2.putString(FirebaseAnalytics.Param.ITEM_NAME, analyticstag);
                           firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle2);
-                          int num=Integer.parseInt(SharedPreferenceClass.getInstance(getContext()).readInterstitialFrequency()==""?"2":
+                          int num=Integer.parseInt(SharedPreferenceClass.getInstance(getContext()).readInterstitialFrequency().isEmpty()?"2":
                                   SharedPreferenceClass.getInstance(getContext()).readInterstitialFrequency());
                           if(AdMobHandler.getInstance(getActivity()).hasInterstitialAdForGameView(num)){
                               //AdMobHandler.getInstance(getActivity()).showIntertitialAd();
@@ -170,7 +173,7 @@ public class HomeScreen extends Fragment {
             @Override
             public void onClick(View v) {
                 // Operations on FirebaseCrashlytics.
-
+                FirebaseCrashlytics.getInstance().log(CrashlyticsTags.screenTransitions);
                 throw new RuntimeException("Test Crash");
 
             }
@@ -198,7 +201,11 @@ public class HomeScreen extends Fragment {
             player.stop();
         }
     }
-
+    private void addCutomKeyInCrashlytics(){
+        FirebaseCrashlytics.getInstance().setCustomKey(CrashlyticsTags.ScreenTag,CrashlyticsTags.screen_name2);
+        FirebaseCrashlytics.getInstance().setCustomKey(CrashlyticsTags.BestScoreTag,SharedPreferenceClass.getInstance(getContext()).read(SharedPreferenceClass.BestScore));
+        CrashlyticsTags.screenTransitions=CrashlyticsTags.screenTransitions+" > Home";
+    }
 
 }
 

@@ -14,8 +14,10 @@ import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.rishabhmatharoo.blacklight.Activity.Activity_Main;
 import com.rishabhmatharoo.blacklight.AdHandler.AdMobHandler;
+import com.rishabhmatharoo.blacklight.Crashlytics.CrashlyticsTags;
 import com.rishabhmatharoo.blacklight.Interfaces.FragmentActionListener;
 import com.rishabhmatharoo.blacklight.R;
 import com.rishabhmatharoo.blacklight.Preference.SharedPreferenceClass;
@@ -35,6 +37,7 @@ public class GameOverFragment extends Fragment {
         AdMobHandler.getInstance(getActivity()).showIntertitialAd();
        if(!AdMobHandler.getInstance(getActivity()).isInterstitialAdLoaded())
            AdMobHandler.getInstance(getActivity()).loadIntertitialAd();
+        addCutomKeyInCrashlytics();
         return inflater.inflate(R.layout.gameoverscreen,parent,false);
     }
     public void setFragmentActionListener2(FragmentActionListener fragmentActionListener1){
@@ -127,5 +130,9 @@ public class GameOverFragment extends Fragment {
         }
         FirebaseAnalytics.getInstance(getContext()).setUserProperty(userProperty,userExperience);
     }
-
+    private void addCutomKeyInCrashlytics(){
+        FirebaseCrashlytics.getInstance().setCustomKey(CrashlyticsTags.ScreenTag,CrashlyticsTags.screen_name4);
+        FirebaseCrashlytics.getInstance().setCustomKey(CrashlyticsTags.BestScoreTag,SharedPreferenceClass.getInstance(getContext()).read(SharedPreferenceClass.BestScore));
+        CrashlyticsTags.screenTransitions=CrashlyticsTags.screenTransitions+" > GameOver";
+    }
 }
