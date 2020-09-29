@@ -29,7 +29,7 @@ public class SplashScreenFragment  extends Fragment {
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState){
-        //getSharedPreferenceBestScore();
+       // getSharedPreferenceBestScore();
         AdMobHandler.getInstance(getActivity()).pauseBannerAd();
         addCutomKeyInCrashlytics();
         return inflater.inflate(R.layout.splashscreen,parent,false);
@@ -90,13 +90,14 @@ public class SplashScreenFragment  extends Fragment {
     }
     private void getSharedPreferenceBestScore(){
         try {
-            if(SharedPreferenceClass.getInstance(getContext()).readnullvalue(SharedPreferenceClass.wrongkeyofbestscore).isEmpty()){
+            //if(SharedPreferenceClass.getInstance(getContext()).readnullvalue(SharedPreferenceClass.wrongkeyofbestscore).isEmpty()){
 
                 //FirebaseCrashlytics.getInstance().log("Shared Preference Best Score Not Found");
-                throw new RuntimeException("Null Pointer Exception");
-            }
+                throw new RuntimeException("Shared Preference Best Score Not Found");
+           // }
         }catch (Exception e){
             FirebaseCrashlytics.getInstance().setCustomKey("logs","Shared Preference Best Score Not Found");
+
             FirebaseCrashlytics.getInstance().recordException(e);
         }
     }
