@@ -18,6 +18,7 @@ public class SharedPreferenceClass {
     public static String colorvalues="ColorValue";
     public static String BgMusic="BgMusic";
     public static String interstitialFreq="InterstitialFrequency";
+    public static String playerExperience="PlayerExperience";
     public static String ColorDefaultValues="{\"colour1\":\"#ff0000\",\"colour2\":\"#00ff00\",\"colour3\":\"#0000ff\",\"colour4\":\"#FFFF00\"}";
 private SharedPreferenceClass(Context context)
     {

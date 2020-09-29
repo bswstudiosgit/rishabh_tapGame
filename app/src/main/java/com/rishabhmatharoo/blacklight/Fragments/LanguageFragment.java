@@ -1,7 +1,6 @@
 package com.rishabhmatharoo.blacklight.Fragments;
 
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,11 +11,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.rishabhmatharoo.blacklight.Activity_Main;
+import com.rishabhmatharoo.blacklight.Activity.Activity_Main;
 import com.rishabhmatharoo.blacklight.Interfaces.FragmentActionListener;
 import com.rishabhmatharoo.blacklight.Adapter.MultiLangAdapter;
-import com.rishabhmatharoo.blacklight.Interfaces.PopupCallBackFragmentInterface;
-import com.rishabhmatharoo.blacklight.Preference.SharedPreferenceClass;
 import com.rishabhmatharoo.blacklight.R;
 import com.rishabhmatharoo.blacklight.Interfaces.RecylerViewCallBack;
 

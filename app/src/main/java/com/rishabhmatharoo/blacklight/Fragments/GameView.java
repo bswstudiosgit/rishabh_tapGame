@@ -16,7 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.rishabhmatharoo.blacklight.Activity_Main;
+import com.rishabhmatharoo.blacklight.Activity.Activity_Main;
 import com.rishabhmatharoo.blacklight.AdHandler.AdMobHandler;
 import com.rishabhmatharoo.blacklight.CustomDialog.RewardAdPopupDialog;
 import com.rishabhmatharoo.blacklight.Interfaces.FragmentActionListener;
@@ -439,7 +439,14 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
         }else {
             Bundle bundle = new Bundle();
             if (fragmentActionListener != null && !isStateSaved()) {
+                /*
+                Bundle firebaseAnalyticsBundle=new Bundle();
 
+                firebaseAnalyticsBundle.putString(FirebaseAnalytics.Param.SCORE,String.valueOf(finalscore));
+                FirebaseAnalytics firebaseAnalytics=FirebaseAnalytics.getInstance(getContext());
+                firebaseAnalytics.logEvent(FirebaseAnalytics.Event.POST_SCORE,firebaseAnalyticsBundle);
+
+                 */
                 bundle.putString(FragmentActionListener.FRAGMENT_NAME, "GameOver");
 
                 bundle.putInt(finalscorestring, finalscore);

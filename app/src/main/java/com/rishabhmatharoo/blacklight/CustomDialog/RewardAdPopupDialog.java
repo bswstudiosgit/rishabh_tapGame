@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 
-import com.rishabhmatharoo.blacklight.Activity_Main;
+import com.rishabhmatharoo.blacklight.Activity.Activity_Main;
 import com.rishabhmatharoo.blacklight.AdHandler.AdMobHandler;
 import com.rishabhmatharoo.blacklight.Interfaces.FragmentActionListener;
 import com.rishabhmatharoo.blacklight.Interfaces.TransactionCallBack;

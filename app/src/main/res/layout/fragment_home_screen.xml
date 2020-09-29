@@ -18,7 +18,7 @@
            app:layout_constraintEnd_toEndOf="parent"
            app:layout_constraintStart_toStartOf="parent"
            app:layout_constraintTop_toTopOf="parent"
-           app:layout_constraintVertical_bias="0.4" />
+           app:layout_constraintVertical_bias="0.3" />
 
        <Button
         android:id="@+id/playbutton"
@@ -67,6 +67,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/languagebutton" />
-
+    <Button
+        android:id="@+id/crashButton"
+        android:layout_width="@dimen/widthvalue"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/marginvalue40"
+        android:background="@drawable/orangecolorpanel2"
+        android:text="Crash"
+        android:textColor="@color/whitecolor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rcvalues" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

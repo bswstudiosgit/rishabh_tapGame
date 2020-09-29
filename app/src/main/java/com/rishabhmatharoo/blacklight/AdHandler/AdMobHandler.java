@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,11 +34,10 @@ import com.google.android.gms.ads.rewarded.RewardItem;
 import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.android.gms.ads.rewarded.RewardedAdCallback;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
-import com.rishabhmatharoo.blacklight.Activity_Main;
+import com.rishabhmatharoo.blacklight.Activity.Activity_Main;
 import com.rishabhmatharoo.blacklight.Interfaces.FragmentActionListener;
 import com.rishabhmatharoo.blacklight.Interfaces.RewardAdCallBack;
 import com.rishabhmatharoo.blacklight.Interfaces.TransactionCallBack;
-import com.rishabhmatharoo.blacklight.Preference.SharedPreferenceClass;
 import com.rishabhmatharoo.blacklight.R;
 
 public class AdMobHandler {
@@ -439,5 +437,8 @@ public class AdMobHandler {
     public void setRewardAdCallBack(RewardAdCallBack rewardAdCallBack){
         this.rewardAdCallback=rewardAdCallBack;
     }
+
+
+
 
 }

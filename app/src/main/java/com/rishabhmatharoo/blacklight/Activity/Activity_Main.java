@@ -1,4 +1,4 @@
-package com.rishabhmatharoo.blacklight;
+package com.rishabhmatharoo.blacklight.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
 
 import com.google.android.gms.ads.AdRequest;
@@ -23,6 +22,7 @@ import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.installations.FirebaseInstallations;
 import com.google.firebase.installations.InstallationTokenResult;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
@@ -37,6 +37,7 @@ import com.rishabhmatharoo.blacklight.Interfaces.FragmentActionListener;
 import com.rishabhmatharoo.blacklight.Interfaces.GameViewInterface;
 import com.rishabhmatharoo.blacklight.Interfaces.PopupCallBackFragmentInterface;
 import com.rishabhmatharoo.blacklight.Preference.SharedPreferenceClass;
+import com.rishabhmatharoo.blacklight.R;
 import com.rishabhmatharoo.blacklight.RemoteConfig.RemoteConfigKey;
 
 import java.util.Locale;
@@ -59,6 +60,7 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
     private String bannerAdId="ca-app-pub-3940256099942544/6300978111";
     private FrameLayout adContainerView;
     private static final String AD_UNIT_ID = "ca-app-pub-3940256099942544/9214589741";
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +70,7 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activitymain);
-
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
        /* adView=findViewById(R.id.adView);
         adView.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
         */

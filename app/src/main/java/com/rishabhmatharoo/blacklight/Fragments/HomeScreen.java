@@ -14,7 +14,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 
-import com.rishabhmatharoo.blacklight.Activity_Main;
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.rishabhmatharoo.blacklight.Activity.Activity_Main;
 import com.rishabhmatharoo.blacklight.AdHandler.AdMobHandler;
 import com.rishabhmatharoo.blacklight.CustomDialog.ShowRcValueDialog;
 import com.rishabhmatharoo.blacklight.Interfaces.FragmentActionListener;
@@ -29,10 +30,12 @@ public class HomeScreen extends Fragment {
 
     MediaPlayer player;
     boolean ismusicplaying=false;
+    private FirebaseAnalytics firebaseAnalytics;
 
     @Override
     public View onCreateView(LayoutInflater inflater,ViewGroup parent,Bundle savedInstanceState){
         AdMobHandler.getInstance(getActivity()).resumeBannerAd();
+        firebaseAnalytics=FirebaseAnalytics.getInstance(getContext());
         return inflater.inflate(R.layout.fragment_home_screen,parent,false);
 
     }
@@ -75,7 +78,7 @@ public class HomeScreen extends Fragment {
         final Button continuebtn=(Button)view.findViewById(R.id.countinuebutton);
         final Button language=(Button)view.findViewById(R.id.languagebutton);
         final Button rcvalues=(Button)view.findViewById(R.id.rcvalues);
-
+        final Button crashbutton=(Button)view.findViewById(R.id.crashButton);
         final Animation animation= AnimationUtils.loadAnimation(getContext(),R.anim.bounce);
 
 
@@ -102,9 +105,14 @@ public class HomeScreen extends Fragment {
             @Override
             public void onClick(View v) {
                     Log.d("HomeScreenListener","yes working");
+
                      SharedPreferenceClass.getInstance(getContext()).writeBoolean(SharedPreferenceClass.isSave,false);
                       if(fragmentActionListener!=null && !isStateSaved()){
-
+                          Bundle bundle2 = new Bundle();
+                          String analyticstag="game_started";
+                          bundle2.putString(FirebaseAnalytics.Param.ITEM_ID, String.valueOf(1234345));
+                          bundle2.putString(FirebaseAnalytics.Param.ITEM_NAME, analyticstag);
+                          firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle2);
                           int num=Integer.parseInt(SharedPreferenceClass.getInstance(getContext()).readInterstitialFrequency()==""?"2":
                                   SharedPreferenceClass.getInstance(getContext()).readInterstitialFrequency());
                           if(AdMobHandler.getInstance(getActivity()).hasInterstitialAdForGameView(num)){
@@ -140,12 +148,15 @@ public class HomeScreen extends Fragment {
         language.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if(fragmentActionListener!=null && !isStateSaved()){
                     Bundle bundle=new Bundle();
                     bundle.putString(FragmentActionListener.FRAGMENT_NAME,"LanguageFragment");
 
                     fragmentActionListener.onFragmentSelected(bundle);
                 }
+
+
             }
         });
         rcvalues.setOnClickListener(new View.OnClickListener() {
@@ -153,6 +164,15 @@ public class HomeScreen extends Fragment {
             public void onClick(View v) {
                 ShowRcValueDialog showRcValueDialog=new ShowRcValueDialog(getActivity());
                 showRcValueDialog.show();
+            }
+        });
+        crashbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Operations on FirebaseCrashlytics.
+
+                throw new RuntimeException("Test Crash");
+
             }
         });
     }

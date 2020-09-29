@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
+// Apply the Crashlytics Gradle plugin
+apply plugin: 'com.google.firebase.crashlytics'
 
 android {
     compileSdkVersion 28
@@ -7,8 +9,8 @@ android {
         applicationId "com.rishabhmatharoo.blacklight"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 10
-        versionName "1.10"
+        versionCode 13
+        versionName "1.13"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
     }
@@ -37,5 +39,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-config:19.2.0'
     implementation 'com.google.firebase:firebase-storage:19.2.0'
     implementation "androidx.cardview:cardview:1.0.0"
+    // Recommended: Add the Firebase SDK for Google Analytics.
+
+    // Add the Firebase Crashlytics SDK.
+    implementation 'com.google.firebase:firebase-crashlytics:17.2.1'
 
 }

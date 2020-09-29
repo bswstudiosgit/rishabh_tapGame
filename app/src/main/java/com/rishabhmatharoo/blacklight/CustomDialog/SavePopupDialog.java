@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -15,7 +14,6 @@ import android.widget.Toast;
 
 import androidx.cardview.widget.CardView;
 
-import com.rishabhmatharoo.blacklight.Activity_Main;
 import com.rishabhmatharoo.blacklight.AdHandler.AdMobHandler;
 import com.rishabhmatharoo.blacklight.Interfaces.GameViewInterface;
 import com.rishabhmatharoo.blacklight.Interfaces.PopupCallBackFragmentInterface;

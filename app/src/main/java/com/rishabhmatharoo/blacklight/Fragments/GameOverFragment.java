@@ -13,7 +13,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.ads.InterstitialAd;
-import com.rishabhmatharoo.blacklight.Activity_Main;
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.rishabhmatharoo.blacklight.Activity.Activity_Main;
 import com.rishabhmatharoo.blacklight.AdHandler.AdMobHandler;
 import com.rishabhmatharoo.blacklight.Interfaces.FragmentActionListener;
 import com.rishabhmatharoo.blacklight.R;
@@ -28,6 +29,9 @@ public class GameOverFragment extends Fragment {
        if(this.getArguments()!=null){
            finalscore=this.getArguments().getInt("FinalScore");
        }
+       SharedPreferenceClass.getInstance(getContext()).write(SharedPreferenceClass.playerExperience,
+               SharedPreferenceClass.getInstance(getContext()).read(SharedPreferenceClass.playerExperience)+1);
+       UpdatePlayerExperienceInGoogleAnalytics(SharedPreferenceClass.getInstance(getContext()).read(SharedPreferenceClass.playerExperience));
         AdMobHandler.getInstance(getActivity()).showIntertitialAd();
        if(!AdMobHandler.getInstance(getActivity()).isInterstitialAdLoaded())
            AdMobHandler.getInstance(getActivity()).loadIntertitialAd();
@@ -50,6 +54,9 @@ public class GameOverFragment extends Fragment {
 
         TextView currentscore=(TextView)view.findViewById(R.id.currentscore);
         final int score=finalscore;
+        Bundle firebaseAnalyticsBundle=new Bundle();
+        firebaseAnalyticsBundle.putString(FirebaseAnalytics.Param.SCORE,String.valueOf(finalscore));
+        FirebaseAnalytics.getInstance(getContext()).logEvent(FirebaseAnalytics.Event.POST_SCORE,firebaseAnalyticsBundle);
         currentscore.setText(getString(R.string.currentscore)+" "+score);
         TextView bestscore=(TextView)view.findViewById(R.id.bestscore);
         //if current score is greater then best score then replace with current score.
@@ -105,6 +112,20 @@ public class GameOverFragment extends Fragment {
                     }
             }
         });
+    }
+    private void UpdatePlayerExperienceInGoogleAnalytics(int experience){
+        String userProperty="experience";
+        String userExperience="";
+        if(experience<4){
+            userExperience="Beginner";
+        }else if(experience<15 && experience>4){
+            userExperience="Intermediate";
+            Log.d("UserExperience","Intermediate");
+        }else if(experience>=15){
+            userExperience="Expert";
+            Log.d("UserExperience","Expert");
+        }
+        FirebaseAnalytics.getInstance(getContext()).setUserProperty(userProperty,userExperience);
     }
 
 }
