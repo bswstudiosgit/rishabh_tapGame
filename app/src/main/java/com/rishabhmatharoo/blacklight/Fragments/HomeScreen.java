@@ -1,11 +1,14 @@
 package com.rishabhmatharoo.blacklight.Fragments;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,9 +16,12 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.rishabhmatharoo.blacklight.Activity.Activity_Main;
 import com.rishabhmatharoo.blacklight.AdHandler.AdMobHandler;
 import com.rishabhmatharoo.blacklight.Crashlytics.CrashlyticsTags;
@@ -37,7 +43,6 @@ public class HomeScreen extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater,ViewGroup parent,Bundle savedInstanceState){
         AdMobHandler.getInstance(getActivity()).resumeBannerAd();
-        firebaseAnalytics=FirebaseAnalytics.getInstance(getContext());
         addCutomKeyInCrashlytics();
         return inflater.inflate(R.layout.fragment_home_screen,parent,false);
 
@@ -83,7 +88,7 @@ public class HomeScreen extends Fragment {
         final Button rcvalues=(Button)view.findViewById(R.id.rcvalues);
         final Button crashbutton=(Button)view.findViewById(R.id.crashButton);
         final Animation animation= AnimationUtils.loadAnimation(getContext(),R.anim.bounce);
-
+        final Button SubscribeButton=(Button)view.findViewById(R.id.SubscribeButton);
 
 
 /*        if(SharedPreferenceClass.getInstance(getContext()).read(SharedPreferenceClass.language)==2) {
@@ -111,11 +116,8 @@ public class HomeScreen extends Fragment {
 
                      SharedPreferenceClass.getInstance(getContext()).writeBoolean(SharedPreferenceClass.isSave,false);
                       if(fragmentActionListener!=null && !isStateSaved()){
-                          Bundle bundle2 = new Bundle();
-                          String analyticstag="game_started";
-                          bundle2.putString(FirebaseAnalytics.Param.ITEM_ID, String.valueOf(1234345));
-                          bundle2.putString(FirebaseAnalytics.Param.ITEM_NAME, analyticstag);
-                          firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle2);
+                          Bundle firebaseanalyticsBundle=new Bundle();
+                          FirebaseAnalytics.getInstance(getContext()).logEvent("game_start",firebaseanalyticsBundle);
                           int num=Integer.parseInt(SharedPreferenceClass.getInstance(getContext()).readInterstitialFrequency().isEmpty()?"2":
                                   SharedPreferenceClass.getInstance(getContext()).readInterstitialFrequency());
                           if(AdMobHandler.getInstance(getActivity()).hasInterstitialAdForGameView(num)){
@@ -178,6 +180,17 @@ public class HomeScreen extends Fragment {
 
             }
         });
+        SubscribeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TelephonyManager tm = (TelephonyManager)getContext().getSystemService(Context.TELEPHONY_SERVICE);
+                String countryCodeValue = tm.getNetworkCountryIso();
+
+                Log.d("CountryCode:",countryCodeValue);
+                FirebaseMessaging.getInstance().subscribeToTopic(countryCodeValue);
+            }
+        });
+
     }
 
 

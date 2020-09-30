@@ -21,6 +21,7 @@ public class SharedPreferenceClass {
     public static String playerExperience="PlayerExperience";
     public static String ColorDefaultValues="{\"colour1\":\"#ff0000\",\"colour2\":\"#00ff00\",\"colour3\":\"#0000ff\",\"colour4\":\"#FFFF00\"}";
     public static String wrongkeyofbestscore="wrong";
+    public static String dataPayloadValue="DataPayLoad";
 private SharedPreferenceClass(Context context)
     {
 
@@ -84,6 +85,13 @@ private SharedPreferenceClass(Context context)
     }
     public String readInterstitialFrequency(){
         return mSharedPref.getString(interstitialFreq,"2");
+    }
+    public void setDataPayload(String Val){
+        SharedPreferences.Editor prefsEditor=mSharedPref.edit();
+        prefsEditor.putString(dataPayloadValue,Val).apply();
+    }
+    public String getDataPayloadValue(){
+        return mSharedPref.getString(dataPayloadValue,"");
     }
 
 }

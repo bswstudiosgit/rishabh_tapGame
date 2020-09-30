@@ -18,7 +18,7 @@
            app:layout_constraintEnd_toEndOf="parent"
            app:layout_constraintStart_toStartOf="parent"
            app:layout_constraintTop_toTopOf="parent"
-           app:layout_constraintVertical_bias="0.3" />
+           app:layout_constraintVertical_bias="0.2" />
 
        <Button
         android:id="@+id/playbutton"
@@ -78,5 +78,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rcvalues" />
+    <Button
+        android:id="@+id/SubscribeButton"
+        android:layout_width="@dimen/widthvalue"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/marginvalue40"
+        android:background="@drawable/greenpanel"
+        android:text="Subscribe"
+        android:textColor="@color/whitecolor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/crashButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

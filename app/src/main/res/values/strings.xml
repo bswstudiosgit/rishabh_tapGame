@@ -15,6 +15,7 @@
     <string name="replaybtn">Replay</string>
     <string name="buttonname2">Continue</string>
     <string name="buttonname3">Language</string>
+    <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
 
     <string name="language1">English</string>
     <string name="language2">Hindi</string>

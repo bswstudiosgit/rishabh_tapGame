@@ -3,20 +3,26 @@ package com.rishabhmatharoo.blacklight.CustomDialog;
 import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.TextView;
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.rishabhmatharoo.blacklight.FirebaseCloudMessageService.Model.PayloadData;
 import com.rishabhmatharoo.blacklight.Preference.SharedPreferenceClass;
 import com.rishabhmatharoo.blacklight.R;
 import com.rishabhmatharoo.blacklight.RemoteConfig.RemoteColorModel;
+
+import java.util.logging.SocketHandler;
 
 public class ShowRcValueDialog extends Dialog {
     public Activity main;
     private TextView handlertime,color1,color2,color3,color4,color5,bgmusic,interstitialfre;
     private String tag1="HandlerTimer: ",tag2="Color1: ",tag3="Color2: ",tag4="Color3: ",tag5="Color4: ",tag6="Color5: ",tag7="A/B Test Bg Music Variable: ",tag8="Interstitial Frequency: ";
-
+    private String tag9="Payload Data:";
     public ShowRcValueDialog(Activity activity){
         super(activity);
         this.main=activity;
@@ -54,7 +60,23 @@ public class ShowRcValueDialog extends Dialog {
         color4.setText(tag5+remoteColorModel.getColour4());
         color5.setText(tag6+remoteColorModel.getColour5());
         bgmusic.setText(tag7+SharedPreferenceClass.getInstance(getContext()).readBgMusic());
-        interstitialfre.setText(tag8+SharedPreferenceClass.getInstance(getContext()).readInterstitialFrequency());
+
+
+        try {
+            if(!SharedPreferenceClass.getInstance(getContext()).getDataPayloadValue().isEmpty()) {
+            PayloadData payloadData = new Gson().fromJson(SharedPreferenceClass.getInstance(getContext()).getDataPayloadValue(), PayloadData.class);
+            Log.d("PayLoad", payloadData.getName());
+
+                interstitialfre.setText( tag8+SharedPreferenceClass.getInstance(getContext()).readInterstitialFrequency()+"\n"+ "PayLoad Data Name:" + payloadData.getName() + "\n PayLoad Data Msg:" + payloadData.getMsg() + "\n PayLoad Data MsgType:" + payloadData.getMsgType());
+                SharedPreferenceClass.getInstance(getContext()).setDataPayload("");
+            }else{
+                interstitialfre.setText(tag8+SharedPreferenceClass.getInstance(getContext()).readInterstitialFrequency()+"\n");
+            }
+        }catch (Exception e){
+            interstitialfre.setText(tag8+SharedPreferenceClass.getInstance(getContext()).readInterstitialFrequency()+"\n");
+            e.printStackTrace();
+        }
+
     }
 
 }
