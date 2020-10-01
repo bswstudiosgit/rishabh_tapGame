@@ -37,13 +37,14 @@ import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.rishabhmatharoo.blacklight.Activity.Activity_Main;
 import com.rishabhmatharoo.blacklight.Interfaces.FragmentActionListener;
 import com.rishabhmatharoo.blacklight.Interfaces.RewardAdCallBack;
-import com.rishabhmatharoo.blacklight.Interfaces.TransactionCallBack;
 import com.rishabhmatharoo.blacklight.R;
+
+import java.lang.ref.WeakReference;
 
 public class AdMobHandler {
     private static AdMobHandler instance;
     InterstitialAd mInterstitialAd;
-    private Activity activity;
+    private static WeakReference<Activity>  activity=null;
     private UnifiedNativeAd nativeAd;
     private RewardedAd rewardedAd;
     FragmentActionListener fragmentActionListener;
@@ -52,7 +53,6 @@ public class AdMobHandler {
     private String nativeAdUnitId="ca-app-pub-3940256099942544/2247696110";
     private String bannerAdId="ca-app-pub-3940256099942544/6300978111";
     private String InterstitialVideoAdUnitId="ca-app-pub-3940256099942544/8691691433";
-    public TransactionCallBack callBack;
     private RewardAdCallBack rewardAdCallback;
     private int numberOfInterstialLoad=0;
     private FrameLayout bannerLayout;
@@ -61,7 +61,7 @@ public class AdMobHandler {
     AdView bannerad;
     private AdMobHandler(Activity activity){
 
-        this.activity=activity;
+        this.activity=new WeakReference<>(activity);
         MobileAds.initialize(activity.getApplicationContext(), new OnInitializationCompleteListener() {
             @Override
             public void onInitializationComplete(InitializationStatus initializationStatus) {
@@ -84,7 +84,7 @@ public class AdMobHandler {
           layout.post(new Runnable() {
             @Override
             public void run() {
-                bannerad = new AdView(activity);
+                bannerad = new AdView(activity.get());
                 bannerad.setAdUnitId(bannerAdId);
 
                 layout.removeAllViews();
@@ -97,26 +97,26 @@ public class AdMobHandler {
                     @Override
                     public void onAdLoaded() {
                         // Code to be executed when an ad finishes loading.
-                        Toast.makeText(activity.getApplicationContext(), "Banner: Ad is Loaded", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity.get().getApplicationContext(), "Banner: Ad is Loaded", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onAdFailedToLoad(LoadAdError adError) {
                         // Code to be executed when an ad request fails.
-                        Toast.makeText(activity.getApplicationContext(), "Banner: Ad is failed to load error" + adError.toString(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity.get().getApplicationContext(), "Banner: Ad is failed to load error" + adError.toString(), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onAdOpened() {
                         // Code to be executed when an ad opens an overlay that
                         // covers the screen.
-                        Toast.makeText(activity.getApplicationContext(), "Banner: Ad is Opened", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity.get().getApplicationContext(), "Banner: Ad is Opened", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onAdClicked() {
                         // Code to be executed when the user clicks on an ad.
-                        Toast.makeText(activity.getApplicationContext(), "Banner: Ad is Clicked", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity.get().getApplicationContext(), "Banner: Ad is Clicked", Toast.LENGTH_SHORT).show();
                     }
 
                 });
@@ -139,7 +139,7 @@ public class AdMobHandler {
     }
     private AdSize getAdSize() {
         // Step 2 - Determine the screen width (less decorations) to use for the ad width.
-        Display display = activity.getWindowManager().getDefaultDisplay();
+        Display display = activity.get().getWindowManager().getDefaultDisplay();
         DisplayMetrics outMetrics = new DisplayMetrics();
         display.getMetrics(outMetrics);
 
@@ -149,22 +149,22 @@ public class AdMobHandler {
         int adWidth = (int) (widthPixels / density);
 
         // Step 3 - Get adaptive ad size and return for setting on the ad view.
-        return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(activity, adWidth);
+        return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(activity.get(), adWidth);
     }
     public void loadIntertitialAd(){
-        mInterstitialAd = new InterstitialAd(activity.getApplicationContext());
+        mInterstitialAd = new InterstitialAd(activity.get().getApplicationContext());
         mInterstitialAd.setAdUnitId(interstitialAdUnitId);
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
         mInterstitialAd.setAdListener(new AdListener(){
                 @Override
                 public void onAdFailedToLoad(LoadAdError adError) {
                     // Code to be executed when an ad request fails.
-                    Toast.makeText(activity.getApplicationContext(),"Interstitial: Ad is Failed to load"+adError.toString(),Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity.get().getApplicationContext(),"Interstitial: Ad is Failed to load"+adError.toString(),Toast.LENGTH_SHORT).show();
                 }
                 @Override
                 public void onAdLoaded() {
                     // Code to be executed when an ad finishes loading.
-                    Toast.makeText(activity.getApplicationContext(),"Interstitial: Ad is Loaded",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity.get().getApplicationContext(),"Interstitial: Ad is Loaded",Toast.LENGTH_SHORT).show();
                     Log.d("InterstialAd","Finish");
                     numberOfInterstialLoad++;
                 }
@@ -172,13 +172,13 @@ public class AdMobHandler {
                  public void onAdClosed() {
                 // Load the next interstitial.
 
-                    Toast.makeText(activity.getApplicationContext(),"Interstitial: Ad is Closed",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity.get().getApplicationContext(),"Interstitial: Ad is Closed",Toast.LENGTH_SHORT).show();
                 mInterstitialAd.loadAd(new AdRequest.Builder().build());
             }
             @Override
             public void onAdClicked() {
                 // Code to be executed when the user clicks on an ad.
-                Toast.makeText(activity.getApplicationContext(),"Interstitial: Ad is Clicked",Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity.get().getApplicationContext(),"Interstitial: Ad is Clicked",Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -202,33 +202,33 @@ public class AdMobHandler {
 
     }
     public void loadInterstitialVideoAd(){
-        interstitialAdVideo = new InterstitialAd(activity.getApplicationContext());
-        interstitialAdVideo.setAdUnitId(interstitialAdUnitId);
+        interstitialAdVideo = new InterstitialAd(activity.get().getApplicationContext());
+        interstitialAdVideo.setAdUnitId(InterstitialVideoAdUnitId);
         interstitialAdVideo.loadAd(new AdRequest.Builder().build());
         interstitialAdVideo.setAdListener( new AdListener(){
             @Override
             public void onAdLoaded() {
                 // Code to be executed when an ad finishes loading.
-                Toast.makeText(activity.getApplicationContext(), "Video: Ad is Loaded", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity.get().getApplicationContext(), "Video: Ad is Loaded", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onAdFailedToLoad(LoadAdError adError) {
                 // Code to be executed when an ad request fails.
-                Toast.makeText(activity.getApplicationContext(), "Video: Ad is failed to load error" + adError.toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity.get().getApplicationContext(), "Video: Ad is failed to load error" + adError.toString(), Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onAdOpened() {
                 // Code to be executed when an ad opens an overlay that
                 // covers the screen.
-                Toast.makeText(activity.getApplicationContext(), "Video: Ad is Opened", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity.get().getApplicationContext(), "Video: Ad is Opened", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onAdClicked() {
                 // Code to be executed when the user clicks on an ad.
-                Toast.makeText(activity.getApplicationContext(), "Video: Ad is Clicked", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity.get().getApplicationContext(), "Video: Ad is Clicked", Toast.LENGTH_SHORT).show();
             }
 
         });
@@ -264,7 +264,7 @@ public class AdMobHandler {
     }
     public void loadNativeAd(){
 
-        AdLoader adLoader = new AdLoader.Builder(activity.getApplicationContext(), nativeAdUnitId)
+        AdLoader adLoader = new AdLoader.Builder(activity.get().getApplicationContext(), nativeAdUnitId)
                 .forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
                     @Override
                     public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
@@ -285,16 +285,16 @@ public class AdMobHandler {
                         //progressBar.setVisibility(View.INVISIBLE);
                         //loadNativeAd();
 
-                        Toast.makeText(activity.getApplicationContext(),"NativeAd Failed"+adError.toString(),Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity.get().getApplicationContext(),"NativeAd Failed"+adError.toString(),Toast.LENGTH_SHORT).show();
                     }
                     @Override
                     public void onAdLoaded() {
                         // Code to be executed when an ad finishes loading.
-                        Toast.makeText(activity.getApplicationContext(),"NativeAd Loaded",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity.get().getApplicationContext(),"NativeAd Loaded",Toast.LENGTH_SHORT).show();
                     }
                     @Override
                     public void onAdClosed() {
-                        Toast.makeText(activity.getApplicationContext(),"NativeAd Closed",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity.get().getApplicationContext(),"NativeAd Closed",Toast.LENGTH_SHORT).show();
                     }
                 })
                 .withNativeAdOptions(new NativeAdOptions.Builder()
@@ -307,7 +307,7 @@ public class AdMobHandler {
     public void showNativeAd(CardView cardView){
         //If ad is not loaded then nativeAd will has null value.
         if(nativeAd!=null ){
-            UnifiedNativeAdView adView=(UnifiedNativeAdView)activity.getLayoutInflater().inflate(R.layout.native_ad_layout,null);
+            UnifiedNativeAdView adView=(UnifiedNativeAdView)activity.get().getLayoutInflater().inflate(R.layout.native_ad_layout,null);
             populateNativeAd(adView,nativeAd);
             cardView.removeAllViews();
             cardView.addView(adView);
@@ -365,7 +365,7 @@ public class AdMobHandler {
             nativeAdView.getCallToActionView().setVisibility(View.VISIBLE);
         }
         nativeAdView.setNativeAd(nativeAd);
-        loadNativeAd();
+        //loadNativeAd();
     }
     public void destroyNativeAds(){
         if(nativeAd!=null){
@@ -380,14 +380,14 @@ public class AdMobHandler {
         }
     }
     public void loadRewardAd(){
-        rewardedAd = new RewardedAd(activity,
+        rewardedAd = new RewardedAd(activity.get(),
                 rewardAdUnitId);
         RewardedAdLoadCallback adLoadCallback = new RewardedAdLoadCallback() {
             @Override
             public void onRewardedAdLoaded() {
                 // Ad successfully loaded.
                 Log.d("RewardAd","Ad is loaded Completed");
-                Toast.makeText(activity.getApplicationContext(),"RewardAdLoaded",Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity.get().getApplicationContext(),"RewardAdLoaded",Toast.LENGTH_SHORT).show();
 
             }
 
@@ -396,7 +396,7 @@ public class AdMobHandler {
                 // Ad failed to load.
                 Log.d("RewardAd","Ad load failed");
                 rewardAdCallback.onRewardAdFailedToLoad();
-                Toast.makeText(activity.getApplicationContext(),"RewardAdFailedToLoad",Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity.get().getApplicationContext(),"RewardAdFailedToLoad",Toast.LENGTH_SHORT).show();
             }
         };
         rewardedAd.loadAd(new AdRequest.Builder().build(), adLoadCallback);
@@ -412,7 +412,8 @@ public class AdMobHandler {
                 @Override
                 public void onRewardedAdClosed() {
                     // Ad closed.
-                       callBack.onScreentransaction();
+                       //callBack.onScreentransaction();
+                        rewardAdCallback.onScreenChangeToGameOVer();
                 }
                 @Override
                 public void onUserEarnedReward(@NonNull RewardItem reward) {
@@ -424,21 +425,14 @@ public class AdMobHandler {
                     // Ad failed to display.
                 }
             };
-            rewardedAd.show(activity, adCallback);
+            rewardedAd.show(activity.get(), adCallback);
         } else {
             Log.d("TAG", "The rewarded ad wasn't loaded yet.");
             loadRewardAd();
         }
 
     }
-    public void setCallBackReference(TransactionCallBack transactionCallBack){
-        this.callBack=transactionCallBack;
-    }
     public void setRewardAdCallBack(RewardAdCallBack rewardAdCallBack){
         this.rewardAdCallback=rewardAdCallBack;
     }
-
-
-
-
 }

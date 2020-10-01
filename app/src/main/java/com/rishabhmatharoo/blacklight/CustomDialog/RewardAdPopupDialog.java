@@ -11,14 +11,14 @@ import android.widget.Button;
 import com.rishabhmatharoo.blacklight.Activity.Activity_Main;
 import com.rishabhmatharoo.blacklight.AdHandler.AdMobHandler;
 import com.rishabhmatharoo.blacklight.Interfaces.FragmentActionListener;
-import com.rishabhmatharoo.blacklight.Interfaces.TransactionCallBack;
+import com.rishabhmatharoo.blacklight.Interfaces.RewardAdCallBack;
 import com.rishabhmatharoo.blacklight.R;
 
 public class RewardAdPopupDialog extends Dialog {
     private Activity activity;
     private Button watch,cancel;
     FragmentActionListener fragmentActionListener;
-    TransactionCallBack callBack;
+    RewardAdCallBack rewardAdCallBack;
     public RewardAdPopupDialog(Activity activity){
         super(activity);
         this.activity=activity;
@@ -59,8 +59,10 @@ public class RewardAdPopupDialog extends Dialog {
             public void onClick(View v) {
                 //GameOver Fragment.
                 dismiss();
-                callBack.onScreentransaction();
-               /* Bundle bundle = new Bundle();
+               rewardAdCallBack.onScreenChangeToGameOVer();
+               // callBack.onScreentransaction();
+
+                /* Bundle bundle = new Bundle();
                 if (fragmentActionListener != null ) {
 
                     bundle.putString(FragmentActionListener.FRAGMENT_NAME, "GameOver");
@@ -74,8 +76,9 @@ public class RewardAdPopupDialog extends Dialog {
             }
         });
     }
-    public void setScreenTransactionCallBack(TransactionCallBack callBack){
-        this.callBack=callBack;
+
+    public void setRewardAdCallBack(RewardAdCallBack rewardAdCallBack){
+        this.rewardAdCallBack=rewardAdCallBack;
     }
 
 }

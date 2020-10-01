@@ -22,6 +22,7 @@ public class SharedPreferenceClass {
     public static String ColorDefaultValues="{\"colour1\":\"#ff0000\",\"colour2\":\"#00ff00\",\"colour3\":\"#0000ff\",\"colour4\":\"#FFFF00\"}";
     public static String wrongkeyofbestscore="wrong";
     public static String dataPayloadValue="DataPayLoad";
+    public static String dailyNotification="DailyNotification";
 private SharedPreferenceClass(Context context)
     {
 
@@ -93,5 +94,6 @@ private SharedPreferenceClass(Context context)
     public String getDataPayloadValue(){
         return mSharedPref.getString(dataPayloadValue,"");
     }
+
 
 }

@@ -6,6 +6,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -23,12 +27,15 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.installations.FirebaseInstallations;
 import com.google.firebase.installations.InstallationTokenResult;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.rishabhmatharoo.blacklight.AdHandler.AdMobHandler;
 import com.rishabhmatharoo.blacklight.Crashlytics.CrashlyticsTags;
+import com.rishabhmatharoo.blacklight.DailyRepeatNotification.AlarmService;
+import com.rishabhmatharoo.blacklight.DailyRepeatNotification.NotificationReceiver;
 import com.rishabhmatharoo.blacklight.Fragments.GameOverFragment;
 import com.rishabhmatharoo.blacklight.Fragments.GameView;
 import com.rishabhmatharoo.blacklight.Fragments.HomeScreen;
@@ -41,6 +48,7 @@ import com.rishabhmatharoo.blacklight.Preference.SharedPreferenceClass;
 import com.rishabhmatharoo.blacklight.R;
 import com.rishabhmatharoo.blacklight.RemoteConfig.RemoteConfigKey;
 
+import java.util.Calendar;
 import java.util.Locale;
 
 public class Activity_Main extends AppCompatActivity implements FragmentActionListener, PopupCallBackFragmentInterface {
@@ -65,13 +73,21 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         loadRcValues(0);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activitymain);
+        AlarmService.getInstance(getApplicationContext()).setDailyNotification();
+        //setAlaram();
+        //if(!SharedPreferenceClass.getInstance(this).readboolean(SharedPreferenceClass.dailyNotification)) {
+            //Daily Notification has not set yet.
+            //setAlaram();
+        //}
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        //Log.d("FirebaseTokenId", "token "+ FirebaseInstanceId.getInstance().getToken());
        /* adView=findViewById(R.id.adView);
         adView.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
         */
@@ -388,4 +404,22 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
 
         return AdSize.getCurrentOrientationBannerAdSizeWithWidth(this, adWidth);
     }
+/*
+    private void setAlaram(){
+        Calendar calendar=Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY,17);
+        calendar.set(Calendar.MINUTE,50);
+        Intent intent=new Intent(getApplicationContext(), NotificationReceiver.class);
+
+        PendingIntent pendingIntent=PendingIntent.getBroadcast(getApplicationContext(),100,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+
+        AlarmManager alarmManager=(AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),1000*30,pendingIntent);
+        //SharedPreferenceClass.getInstance(this).writeBoolean(SharedPreferenceClass.dailyNotification,true);
+    }
+
+
+ */
+
 }

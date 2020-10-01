@@ -25,7 +25,6 @@ import com.rishabhmatharoo.blacklight.Interfaces.FragmentActionListener;
 import com.rishabhmatharoo.blacklight.Interfaces.GameViewInterface;
 import com.rishabhmatharoo.blacklight.Interfaces.PopupCallBackFragmentInterface;
 import com.rishabhmatharoo.blacklight.Interfaces.RewardAdCallBack;
-import com.rishabhmatharoo.blacklight.Interfaces.TransactionCallBack;
 import com.rishabhmatharoo.blacklight.Preference.SharedPreferenceClass;
 import com.rishabhmatharoo.blacklight.R;
 import com.rishabhmatharoo.blacklight.CustomDialog.SavePopupDialog;
@@ -69,9 +68,16 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
         //Load Reward Ad in onCreateView Method.
         AdMobHandler.getInstance(getActivity()).loadRewardAd();
 
-        AdMobHandler.getInstance(getActivity()).setCallBackReference(new TransactionCallBack() {
+        AdMobHandler.getInstance(getActivity()).setRewardAdCallBack(new RewardAdCallBack() {
+
             @Override
-            public void onScreentransaction() {
+            public void onRewardAdEarned() {
+                rewardAdPopupActive = false;
+                hasAlreadytakenreward = true;
+            }
+
+            @Override
+            public void onScreenChangeToGameOVer() {
                 if(!hasAlreadytakenreward){
                     Bundle bundle = new Bundle();
                     if (fragmentActionListener != null ) {
@@ -80,21 +86,16 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
                         fragmentActionListener.onFragmentSelected(bundle);
                     }
                 }
-
             }
-        });
-        AdMobHandler.getInstance(getActivity()).setRewardAdCallBack(new RewardAdCallBack() {
 
-            @Override
-            public void onRewardAdEarned() {
-                rewardAdPopupActive = false;
-                hasAlreadytakenreward = true;
-            }
             @Override
             public void onRewardAdFailedToLoad(){
                 rewardAdFailedToLoad=true;
             }
+
+
         });
+
         addCutomKeyInCrashlytics();
         return inflater.inflate(R.layout.gameviewfragment,group,false);
 
@@ -423,18 +424,20 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
             Log.d("rewardDialog","Dialog");
             RewardAdPopupDialog rewardAdPopupDialog=new RewardAdPopupDialog(getActivity());
             rewardAdPopupDialog.setCancelable(false);
-            rewardAdPopupDialog.setScreenTransactionCallBack(new TransactionCallBack() {
+            rewardAdPopupDialog.setRewardAdCallBack(new RewardAdCallBack() {
                 @Override
-                public void onScreentransaction() {
+                public void onRewardAdFailedToLoad() { }
+                @Override
+                public void onRewardAdEarned() { }
+                @Override
+                public void onScreenChangeToGameOVer() {
                     if(!hasAlreadytakenreward){
                         Bundle bundle = new Bundle();
                         if (fragmentActionListener != null ) {
                             bundle.putString(FragmentActionListener.FRAGMENT_NAME, "GameOver");
                             bundle.putInt("FinalScore", finalscore);
-                            fragmentActionListener.onFragmentSelected(bundle);
-                        }
+                            fragmentActionListener.onFragmentSelected(bundle); }
                     }
-
                 }
             });
             rewardAdPopupDialog.show();
@@ -513,13 +516,14 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
         //Utilclass.isSavePopActive=true;
         if(!new RewardAdPopupDialog(getActivity()).isShowing()) {
 
-            AdMobHandler.getInstance(getActivity()).loadNativeAd();
             dialog = new SavePopupDialog(getActivity(),refreshNativeAdHandler);
             dialog.setPopupCallBackFragmentInterface(popupCallBackFragmentInterface);
             dialog.setGameViewInterFace(gameViewInterface);
 
             dialog.setCancelable(false);
             dialog.show();
+            AdMobHandler.getInstance(getActivity()).loadNativeAd();
+
             //ExitDialog dialog1=new ExitDialog(getActivity());
             //dialog1.show();
         }
