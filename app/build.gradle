@@ -4,13 +4,13 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     defaultConfig {
         applicationId "com.rishabhmatharoo.blacklight"
         minSdkVersion 21
-        targetSdkVersion 28
-        versionCode 15
-        versionName "1.15"
+        targetSdkVersion 29
+        versionCode 16
+        versionName "1.16"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
     }

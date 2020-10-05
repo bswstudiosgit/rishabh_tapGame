@@ -63,15 +63,6 @@ public class ShowRcValueDialog extends Dialog {
 
 
         try {
-            if(!SharedPreferenceClass.getInstance(getContext()).getDataPayloadValue().isEmpty()) {
-            PayloadData payloadData = new Gson().fromJson(SharedPreferenceClass.getInstance(getContext()).getDataPayloadValue(), PayloadData.class);
-            Log.d("PayLoad", payloadData.getName());
-
-                interstitialfre.setText( tag8+SharedPreferenceClass.getInstance(getContext()).readInterstitialFrequency()+"\n"+ "PayLoad Data Name:" + payloadData.getName() + "\n PayLoad Data Msg:" + payloadData.getMsg() + "\n PayLoad Data MsgType:" + payloadData.getMsgType());
-                SharedPreferenceClass.getInstance(getContext()).setDataPayload("");
-            }else{
-                interstitialfre.setText(tag8+SharedPreferenceClass.getInstance(getContext()).readInterstitialFrequency()+"\n");
-            }
         }catch (Exception e){
             interstitialfre.setText(tag8+SharedPreferenceClass.getInstance(getContext()).readInterstitialFrequency()+"\n");
             e.printStackTrace();

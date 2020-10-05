@@ -7,9 +7,11 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+import android.provider.Settings;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
@@ -23,6 +25,8 @@ public class NotificationReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+
+
         NotificationManager notificationManager=(NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
         Intent repeat_intent=new Intent(context, Activity_Main.class);
         repeat_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -41,17 +45,27 @@ public class NotificationReceiver extends BroadcastReceiver {
                         .setContentText(context.getString(R.string.daily_notification_mssg))
                         .setAutoCancel(true)
                         .setSound(defaultSoundUri)
+                        .setAutoCancel(false)
+                        .setWhen(System.currentTimeMillis())
+
                         .setContentIntent(pendingIntent);
 
         // Since android Oreo notification channel is needed.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(channelId,
-                    "Channel human readable title",
-                    NotificationManager.IMPORTANCE_DEFAULT);
+                    "Local Notification",
+                    NotificationManager.IMPORTANCE_HIGH);
+            channel.enableLights(true);
+            channel.setLightColor(Color.RED);
+            channel.enableVibration(true);
+            channel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
             notificationManager.createNotificationChannel(channel);
+
         }
 
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+        notificationManager.notify(0 , notificationBuilder.build());
+
+
     }
     private boolean isAppInForeground(Context context) {
         ActivityManager activityManager = (ActivityManager)context. getSystemService(Context.ACTIVITY_SERVICE);

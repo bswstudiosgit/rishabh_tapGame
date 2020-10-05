@@ -32,10 +32,13 @@ import com.google.firebase.installations.FirebaseInstallations;
 import com.google.firebase.installations.InstallationTokenResult;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
+import com.google.gson.Gson;
 import com.rishabhmatharoo.blacklight.AdHandler.AdMobHandler;
 import com.rishabhmatharoo.blacklight.Crashlytics.CrashlyticsTags;
+import com.rishabhmatharoo.blacklight.CustomDialog.PayLoadDialog;
 import com.rishabhmatharoo.blacklight.DailyRepeatNotification.AlarmService;
 import com.rishabhmatharoo.blacklight.DailyRepeatNotification.NotificationReceiver;
+import com.rishabhmatharoo.blacklight.FirebaseCloudMessageService.Model.PayloadData;
 import com.rishabhmatharoo.blacklight.Fragments.GameOverFragment;
 import com.rishabhmatharoo.blacklight.Fragments.GameView;
 import com.rishabhmatharoo.blacklight.Fragments.HomeScreen;
@@ -49,6 +52,7 @@ import com.rishabhmatharoo.blacklight.R;
 import com.rishabhmatharoo.blacklight.RemoteConfig.RemoteConfigKey;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 public class Activity_Main extends AppCompatActivity implements FragmentActionListener, PopupCallBackFragmentInterface {
@@ -80,14 +84,15 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activitymain);
-        AlarmService.getInstance(getApplicationContext()).setDailyNotification();
-        //setAlaram();
-        //if(!SharedPreferenceClass.getInstance(this).readboolean(SharedPreferenceClass.dailyNotification)) {
+        if(!SharedPreferenceClass.getInstance(this).getDailyNotificationBoolean()) {
             //Daily Notification has not set yet.
-            //setAlaram();
+            setAlaram();
+            SharedPreferenceClass.getInstance(this).setDailyNotification(true);
+        }
+
         //}
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-        //Log.d("FirebaseTokenId", "token "+ FirebaseInstanceId.getInstance().getToken());
+        Log.d("FirebaseTokenId", "token "+ FirebaseInstanceId.getInstance().getToken());
        /* adView=findViewById(R.id.adView);
         adView.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
         */
@@ -102,8 +107,9 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
 
         //fullScreenCall();
         checkAndChangelanguage(SharedPreferenceClass.getInstance(this).read(SharedPreferenceClass.language));
-
-        if(savedInstanceState == null) {
+        if (getIntent().getExtras() != null && getIntent().getExtras().containsKey("data")) {
+            checkforpayload(getIntent().getExtras().getString("data"));
+        }else if(savedInstanceState == null && getIntent().getExtras()==null) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             SplashScreenFragment splashScreenFragment = new SplashScreenFragment();
             splashScreenFragment.setFragmentActionListener4(this);
@@ -111,11 +117,12 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
           //  ft.addToBackStack("splashscreen");
             ft.commit();
         }
-
+        loadPayloadValue();
         adContainerView = findViewById(R.id.adView);
 
         AdMobHandler.getInstance(this).loadBannerAd(adContainerView);
         AdMobHandler.getInstance(this).loadInterstitialVideoAd();
+
     }
 
     @Override
@@ -142,6 +149,7 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
     public void onFragmentSelected(Bundle bundle) {
 
         String Fragmentname=bundle.getString(FragmentActionListener.FRAGMENT_NAME);
+        Log.d("NotificationLog",Fragmentname);
         Fragmenttag=Fragmentname;
         if(Fragmentname.equalsIgnoreCase(homescreenstr)){
 
@@ -404,8 +412,27 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
 
         return AdSize.getCurrentOrientationBannerAdSizeWithWidth(this, adWidth);
     }
-/*
+
     private void setAlaram(){
+
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, 16);
+
+
+        Intent intent = new Intent(getApplicationContext(), NotificationReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent,
+                0);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+        if (alarmManager != null) {
+            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        }
+        Log.d("AlarmNotification","Alarm has been set"+alarmManager.toString()+"Calender Time:"+calendar.getTimeInMillis()+"System Millsec:"+System.currentTimeMillis());
+
+
+        /*
         Calendar calendar=Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(Calendar.HOUR_OF_DAY,17);
@@ -417,9 +444,42 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
         AlarmManager alarmManager=(AlarmManager)getSystemService(Context.ALARM_SERVICE);
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),1000*30,pendingIntent);
         //SharedPreferenceClass.getInstance(this).writeBoolean(SharedPreferenceClass.dailyNotification,true);
+         */
+    }
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        if (intent != null && intent.getExtras() != null) {
+            Bundle extras = intent.getExtras();
+            String data = extras.getString("data");
+            PayloadData payloadData = new Gson().fromJson(data, PayloadData.class);
+            Log.d("NotificationLog","onNewIntent");
+            if(payloadData.getMsgType()==1){
+                Bundle bundle =new Bundle();
+                bundle.putString(FragmentActionListener.FRAGMENT_NAME,gameviewstr);
+                onFragmentSelected(bundle);
+            }
+        }
+    }
+    private void checkforpayload(String payloadmssg){
+            PayloadData payloadData = new Gson().fromJson(payloadmssg, PayloadData.class);
+        Log.d("NotificationLog","checkforpayload"+payloadData.getMsgType());
+
+        if(payloadData.getMsgType()==1){
+                Bundle bundle =new Bundle();
+                bundle.putString(FragmentActionListener.FRAGMENT_NAME,gameviewstr);
+                onFragmentSelected(bundle);
+            }
+
+    }
+    private void loadPayloadValue(){
+        if(SharedPreferenceClass.getInstance(getApplicationContext()).getDataPayloadboolean()){
+            PayLoadDialog dialog=new PayLoadDialog(this);
+            dialog.show();
+        }
     }
 
 
- */
 
 }

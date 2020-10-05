@@ -4,4 +4,5 @@ public interface RewardAdCallBack {
     void onRewardAdFailedToLoad();
     void onRewardAdEarned();
     void onScreenChangeToGameOVer();
+    void onRewardAdLoaded();
 }

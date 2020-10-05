@@ -4,30 +4,24 @@ public class PayloadData {
 
     public String Name="";
     public String Msg="";
-    public String msgType="";
+    public int msgType=0;
 
     public String getName() {
         return Name;
     }
-
     public void setName(String name) {
         Name = name;
     }
-
     public String getMsg() {
         return Msg;
     }
-
     public void setMsg(String msg) {
         Msg = msg;
     }
-
-    public String getMsgType() {
+    public int getMsgType() {
         return msgType;
     }
-
-    public void setMsgType(String msgType) {
+    public void setMsgType(int msgType) {
         this.msgType = msgType;
     }
-
 }

@@ -49,6 +49,7 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
     public static String finalscorestring="FinalScore";
     private boolean isPausedapplication=false;
     private boolean isSavePopupActive=false;
+    private boolean rewardAdLoaded=false;
     //Interfaces
     PopupCallBackFragmentInterface popupCallBackFragmentInterface;
     FragmentActionListener fragmentActionListener;
@@ -57,10 +58,11 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
     private RemoteColorModel remoteColorModel;
     private String handlerTimer="";
     private Handler refreshNativeAdHandler=new Handler();
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup group,Bundle savedInstanceState) {
         gameViewInterface=this;
-
+        rewardAdLoaded=false;
       remoteColorModel=new Gson().fromJson(SharedPreferenceClass.getInstance(getContext()).readColorValue(),
                RemoteColorModel.class);
         handlerTimer=SharedPreferenceClass.getInstance(getContext()).readHandlerTimer();
@@ -86,6 +88,11 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
                         fragmentActionListener.onFragmentSelected(bundle);
                     }
                 }
+            }
+
+            @Override
+            public void onRewardAdLoaded() {
+                rewardAdLoaded=true;
             }
 
             @Override
@@ -419,7 +426,8 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
     }
     private void GameOver(){
         //Should not show popup when reward ad is failed to load.
-        if(!hasAlreadytakenreward && !rewardAdFailedToLoad){
+        if(!hasAlreadytakenreward && !rewardAdFailedToLoad && rewardAdLoaded){
+
             disableAllListener();
             Log.d("rewardDialog","Dialog");
             RewardAdPopupDialog rewardAdPopupDialog=new RewardAdPopupDialog(getActivity());
@@ -439,6 +447,12 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
                             fragmentActionListener.onFragmentSelected(bundle); }
                     }
                 }
+
+                @Override
+                public void onRewardAdLoaded() {
+
+                }
+
             });
             rewardAdPopupDialog.show();
             rewardAdPopupActive=true;

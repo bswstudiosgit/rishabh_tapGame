@@ -62,6 +62,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Log.d(TAG, "From: " + remoteMessage.getFrom());
 
         // Check if message contains a data payload.
+        /*
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
             if(remoteMessage.getData().containsKey("message")){
@@ -70,10 +71,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     Log.d("FirebasePayLoad", jsonvalue);
                     PayloadData payloadData = new Gson().fromJson(jsonvalue, PayloadData.class);
                     Log.d("PayLoadData",""+payloadData.getMsgType());
-                    if (payloadData.getMsgType().equals("2")) {
-                        Log.d("PayLoad", payloadData.getName());
-                        SharedPreferenceClass.getInstance(getApplicationContext()).setDataPayload(jsonvalue);
-                    }
+
                 }catch (Exception e){
                     //FirebaseCrashlytics.getInstance().log("Crash is catch under try-catch block");
                     //FirebaseCrashlytics.getInstance().recordException(e);
@@ -82,19 +80,66 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 }
 
             }
+            }
+
+         */
+        //Get Title and body
+        Log.d("FirebaseMessaging","FirebaseNotification");
+        // Check if message contains a notification payload.
+        /*
+        String datapayload=null;
 
 
+
+        String data = null;
+        if (remoteMessage.getData().size() > 0) {
+            //Have payload message
+            data = remoteMessage.getData().get("message");
         }
 
-        // Check if message contains a notification payload.
+        String  body = "";
+        if (remoteMessage.getNotification() != null) {
+            body = remoteMessage.getNotification().getBody();
+        }
+
+        sendNotification(body, data);
+         */
+
+
         if (remoteMessage.getNotification() != null) {
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
+            if(remoteMessage.getData().size()>0){
+                sendNotification(remoteMessage.getNotification().getBody(),remoteMessage.getData().get("message"));
+            }else{
+                sendNotification(remoteMessage.getNotification().getBody(),null);
+            }
+            return;
         }
+
+            try {
+                String jsonvalue = remoteMessage.getData().get("message");
+
+
+                Log.d("FirebasePayLoad", jsonvalue);
+                PayloadData payloadData = new Gson().fromJson(jsonvalue, PayloadData.class);
+
+                if (payloadData.getMsgType() == 1) {
+                    sendNotification(payloadData.getMsg(),remoteMessage.getData().get("message"));
+                } else if (payloadData.getMsgType() == 2) {
+                    Log.d("PayLoad", payloadData.getName());
+                    SharedPreferenceClass.getInstance(getApplicationContext()).setDataPayload(jsonvalue);
+                    SharedPreferenceClass.getInstance(getApplicationContext()).setDataPayloadboolean(true);
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+
 
         // Also if you intend on generating your own notifications as a result of a received FCM
         // message, here is where that should be initiated. See sendNotification method below.
 
-        sendNotification(remoteMessage.getNotification().getBody());
+
     }
     // [END receive_message]
 
@@ -135,11 +180,16 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      *
      * @param messageBody FCM message body received.
      */
-    private void sendNotification(String messageBody) {
+    private void sendNotification(String messageBody,String PayloadMssg) {
+    Log.d("FirebaseNoification",messageBody);
         Intent intent = new Intent(this, Activity_Main.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        if(PayloadMssg!=null){
+            intent.putExtra("data",PayloadMssg);
+        }
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
+
 
         String channelId = getString(R.string.default_notification_channel_id);
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -165,5 +215,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
     }
+
 
 }

@@ -51,7 +51,12 @@
             </intent-filter>
         </service>
         <!-- [END firebase_service] -->
-        <receiver android:name=".DailyRepeatNotification.NotificationReceiver"/>
+        <receiver android:name=".DailyRepeatNotification.NotificationReceiver"
+            android:enabled="true"
+            android:exported="false"
+            >
+
+        </receiver>
         <receiver android:name=".DailyRepeatNotification.BootReceiverNotification"
            >
             <intent-filter>

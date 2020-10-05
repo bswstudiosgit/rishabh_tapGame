@@ -387,6 +387,7 @@ public class AdMobHandler {
             public void onRewardedAdLoaded() {
                 // Ad successfully loaded.
                 Log.d("RewardAd","Ad is loaded Completed");
+                rewardAdCallback.onRewardAdLoaded();
                 Toast.makeText(activity.get().getApplicationContext(),"RewardAdLoaded",Toast.LENGTH_SHORT).show();
 
             }
@@ -398,6 +399,7 @@ public class AdMobHandler {
                 rewardAdCallback.onRewardAdFailedToLoad();
                 Toast.makeText(activity.get().getApplicationContext(),"RewardAdFailedToLoad",Toast.LENGTH_SHORT).show();
             }
+
         };
         rewardedAd.loadAd(new AdRequest.Builder().build(), adLoadCallback);
     }

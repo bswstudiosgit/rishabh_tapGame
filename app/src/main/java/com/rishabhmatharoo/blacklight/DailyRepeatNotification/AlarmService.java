@@ -1,15 +1,14 @@
 package com.rishabhmatharoo.blacklight.DailyRepeatNotification;
 
-import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.provider.SearchRecentSuggestions;
 import android.util.Log;
-
-import java.lang.ref.WeakReference;
 import java.util.Calendar;
+import java.util.Date;
+
+import static android.content.Context.ALARM_SERVICE;
 
 public class AlarmService {
     private static AlarmService service;
@@ -25,18 +24,20 @@ public class AlarmService {
     }
     public void setDailyNotification(){
 
-        Log.d("DailyNotification","Triggered");
-        Calendar calendar=Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY,19);
-        calendar.set(Calendar.MINUTE,9);
-        Intent intent=new Intent(context, NotificationReceiver.class);
+        calendar.set(Calendar.HOUR_OF_DAY, 16);
 
-        PendingIntent pendingIntent=PendingIntent.getBroadcast(context,100,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+        if (calendar.getTime().compareTo(new Date()) < 0)
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
 
-        AlarmManager alarmManager=(AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, NotificationReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent,
+                0);
+        AlarmManager alarmManager = (AlarmManager)context.getSystemService(ALARM_SERVICE);
 
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY,pendingIntent);
-        Log.d("DailyNotification","Triggered");
+        if (alarmManager != null) {
+            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        }
     }
 }

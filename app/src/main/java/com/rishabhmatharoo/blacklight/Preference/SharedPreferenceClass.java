@@ -23,6 +23,7 @@ public class SharedPreferenceClass {
     public static String wrongkeyofbestscore="wrong";
     public static String dataPayloadValue="DataPayLoad";
     public static String dailyNotification="DailyNotification";
+    public static String hasPayLoadValue="hasPayloadValue";
 private SharedPreferenceClass(Context context)
     {
 
@@ -95,5 +96,19 @@ private SharedPreferenceClass(Context context)
         return mSharedPref.getString(dataPayloadValue,"");
     }
 
+    public void setDataPayloadboolean(boolean val){
+        SharedPreferences.Editor prefsEditor=mSharedPref.edit();
+        prefsEditor.putBoolean(hasPayLoadValue,val).apply();
+    }
+    public boolean getDataPayloadboolean(){
+        return mSharedPref.getBoolean(hasPayLoadValue,false);
+    }
 
+    public void setDailyNotification(boolean val){
+        SharedPreferences.Editor prefsEditor=mSharedPref.edit();
+        prefsEditor.putBoolean(dailyNotification,val).apply();
+    }
+    public boolean getDailyNotificationBoolean(){
+        return mSharedPref.getBoolean(dailyNotification,false);
+    }
 }
