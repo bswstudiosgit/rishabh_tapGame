@@ -8,7 +8,6 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -32,13 +31,10 @@ import com.google.firebase.installations.FirebaseInstallations;
 import com.google.firebase.installations.InstallationTokenResult;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
-import com.google.gson.Gson;
 import com.rishabhmatharoo.blacklight.AdHandler.AdMobHandler;
 import com.rishabhmatharoo.blacklight.Crashlytics.CrashlyticsTags;
 import com.rishabhmatharoo.blacklight.CustomDialog.PayLoadDialog;
-import com.rishabhmatharoo.blacklight.DailyRepeatNotification.AlarmService;
 import com.rishabhmatharoo.blacklight.DailyRepeatNotification.NotificationReceiver;
-import com.rishabhmatharoo.blacklight.FirebaseCloudMessageService.Model.PayloadData;
 import com.rishabhmatharoo.blacklight.Fragments.GameOverFragment;
 import com.rishabhmatharoo.blacklight.Fragments.GameView;
 import com.rishabhmatharoo.blacklight.Fragments.HomeScreen;
@@ -52,7 +48,6 @@ import com.rishabhmatharoo.blacklight.R;
 import com.rishabhmatharoo.blacklight.RemoteConfig.RemoteConfigKey;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 
 public class Activity_Main extends AppCompatActivity implements FragmentActionListener, PopupCallBackFragmentInterface {
@@ -74,12 +69,14 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
     private FrameLayout adContainerView;
     private static final String AD_UNIT_ID = "ca-app-pub-3940256099942544/9214589741";
     private FirebaseAnalytics mFirebaseAnalytics;
+    private String currentScreenName="";
+    private long onedaymillsec=86400000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        loadRcValues(0);
+        loadRcValues(cachetime);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -96,8 +93,8 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
        /* adView=findViewById(R.id.adView);
         adView.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
         */
-        AdMobHandler.getInstance(Activity_Main.this).loadIntertitialAd();
-        AdMobHandler.getInstance(Activity_Main.this).loadNativeAd();
+        adContainerView = findViewById(R.id.adView);
+        AdMobHandler.getInstance(this).loadBannerAd(adContainerView);
 
         View overlay = findViewById(R.id.popupview);
 
@@ -109,7 +106,7 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
         checkAndChangelanguage(SharedPreferenceClass.getInstance(this).read(SharedPreferenceClass.language));
         if (getIntent().getExtras() != null && getIntent().getExtras().containsKey("data")) {
             checkforpayload(getIntent().getExtras().getString("data"));
-        }else if(savedInstanceState == null && getIntent().getExtras()==null) {
+        }else if(savedInstanceState == null   ) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             SplashScreenFragment splashScreenFragment = new SplashScreenFragment();
             splashScreenFragment.setFragmentActionListener4(this);
@@ -118,10 +115,10 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
             ft.commit();
         }
         loadPayloadValue();
-        adContainerView = findViewById(R.id.adView);
-
-        AdMobHandler.getInstance(this).loadBannerAd(adContainerView);
+        AdMobHandler.getInstance(Activity_Main.this).loadIntertitialAd();
+        AdMobHandler.getInstance(Activity_Main.this).loadNativeAd();
         AdMobHandler.getInstance(this).loadInterstitialVideoAd();
+
 
     }
 
@@ -151,38 +148,43 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
         String Fragmentname=bundle.getString(FragmentActionListener.FRAGMENT_NAME);
         Log.d("NotificationLog",Fragmentname);
         Fragmenttag=Fragmentname;
-        if(Fragmentname.equalsIgnoreCase(homescreenstr)){
+        if(!Fragmentname.equals(currentScreenName)) {
 
-            FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.yourfragment,new HomeScreen(),homescreentag);
 
-            ft.commit();
+            if (Fragmentname.equalsIgnoreCase(homescreenstr)) {
+                currentScreenName = homescreenstr;
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.yourfragment, new HomeScreen(), homescreentag);
 
-        }else if(Fragmentname.equalsIgnoreCase(gameviewstr)){
+                ft.commit();
 
-            FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-            ft.addToBackStack(gameviewtag);
-            ft.replace(R.id.yourfragment,new GameView(),gameviewtag);
-            ft.commit();
-        }else if(Fragmentname.equalsIgnoreCase(gameoverstr) ){
-            FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-            GameOverFragment gameOverFragment=new GameOverFragment();
-            gameOverFragment.setFragmentActionListener2(this);
-            gameOverFragment.setArguments(bundle);
-            ft.replace(R.id.yourfragment,gameOverFragment,gameovertag);
-            ft.addToBackStack(gameovertag);
-            ft.commit();
+            } else if (Fragmentname.equalsIgnoreCase(gameviewstr)) {
+                currentScreenName = gameviewstr;
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.addToBackStack(gameviewtag);
+                ft.replace(R.id.yourfragment, new GameView(), gameviewtag);
+                ft.commit();
+            } else if (Fragmentname.equalsIgnoreCase(gameoverstr)) {
+                currentScreenName = gameoverstr;
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                GameOverFragment gameOverFragment = new GameOverFragment();
+                gameOverFragment.setFragmentActionListener2(this);
+                gameOverFragment.setArguments(bundle);
+                ft.replace(R.id.yourfragment, gameOverFragment, gameovertag);
+                ft.addToBackStack(gameovertag);
+                ft.commit();
 
-        }else if(Fragmentname.equalsIgnoreCase(languagestr) ){
-            FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-            LanguageFragment languageFragment=new LanguageFragment();
-            languageFragment.setFragmentActionListener5(this);
-            languageFragment.setArguments(bundle);
-            ft.replace(R.id.yourfragment,languageFragment,languagetag);
-            ft.commit();
+            } else if (Fragmentname.equalsIgnoreCase(languagestr)) {
+                currentScreenName = languagestr;
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                LanguageFragment languageFragment = new LanguageFragment();
+                languageFragment.setFragmentActionListener5(this);
+                languageFragment.setArguments(bundle);
+                ft.replace(R.id.yourfragment, languageFragment, languagetag);
+                ft.commit();
 
+            }
         }
-
 
     }
     @Override
@@ -419,18 +421,19 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(Calendar.HOUR_OF_DAY, 16);
-
-
+        calendar.set(Calendar.MINUTE,1);
         Intent intent = new Intent(getApplicationContext(), NotificationReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent,
                 0);
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-
-        if (alarmManager != null) {
-            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        long timeInMillis = calendar.getTimeInMillis();
+        if(timeInMillis-System.currentTimeMillis()<0){
+            //if its in past, add one day
+            timeInMillis += onedaymillsec;
         }
-        Log.d("AlarmNotification","Alarm has been set"+alarmManager.toString()+"Calender Time:"+calendar.getTimeInMillis()+"System Millsec:"+System.currentTimeMillis());
-
+        if (alarmManager != null) {
+            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, timeInMillis, AlarmManager.INTERVAL_DAY, pendingIntent);
+        }
 
         /*
         Calendar calendar=Calendar.getInstance();
@@ -453,24 +456,24 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
         if (intent != null && intent.getExtras() != null) {
             Bundle extras = intent.getExtras();
             String data = extras.getString("data");
-            PayloadData payloadData = new Gson().fromJson(data, PayloadData.class);
-            Log.d("NotificationLog","onNewIntent");
-            if(payloadData.getMsgType()==1){
+           // PayloadData payloadData = new Gson().fromJson(data, PayloadData.class);
+            // if(message.dataclass.msgType==1){
                 Bundle bundle =new Bundle();
                 bundle.putString(FragmentActionListener.FRAGMENT_NAME,gameviewstr);
                 onFragmentSelected(bundle);
-            }
+            //}
         }
     }
     private void checkforpayload(String payloadmssg){
-            PayloadData payloadData = new Gson().fromJson(payloadmssg, PayloadData.class);
-        Log.d("NotificationLog","checkforpayload"+payloadData.getMsgType());
+            //PayloadData payloadData = new Gson().fromJson(payloadmssg, PayloadData.class);
+    //    Log.d("NotificationLog","checkforpayload"+payloadData.getMsgType());
+       // Message message=new Gson().fromJson(payloadmssg,Message.class);
 
-        if(payloadData.getMsgType()==1){
+        //if(message.dataclass.msgType==1){
                 Bundle bundle =new Bundle();
                 bundle.putString(FragmentActionListener.FRAGMENT_NAME,gameviewstr);
                 onFragmentSelected(bundle);
-            }
+          //  }
 
     }
     private void loadPayloadValue(){

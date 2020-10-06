@@ -22,17 +22,24 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 import com.rishabhmatharoo.blacklight.Activity.Activity_Main;
+import com.rishabhmatharoo.blacklight.FirebaseCloudMessageService.Model.Message;
 import com.rishabhmatharoo.blacklight.FirebaseCloudMessageService.Model.PayloadData;
+import com.rishabhmatharoo.blacklight.FirebaseCloudMessageService.Model.Root;
 import com.rishabhmatharoo.blacklight.Preference.SharedPreferenceClass;
 import com.rishabhmatharoo.blacklight.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "MyFirebaseMsgService";
     private PayloadData payloadData;
+    private String key1="Name";
+    private String key2="Msg";
+    private String key3="msgType";
     /**
      * Called when message is received.
      *
@@ -118,18 +125,27 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
             try {
                 String jsonvalue = remoteMessage.getData().get("message");
+                Log.d("Payload",jsonvalue);
+                /*
+                Map<String,String> map=remoteMessage.getData();
+                String username=map.get(key1);
+                String msg=map.get(key2);
+                String msgtype=map.get(key3);
+                 */
+                //String json= jsonvalue;
+                Log.d("Payload",jsonvalue);
+                Message message = new Gson().fromJson(jsonvalue, Message.class);
+                Log.d("Payload",message.data.Msg);
 
-
-                Log.d("FirebasePayLoad", jsonvalue);
-                PayloadData payloadData = new Gson().fromJson(jsonvalue, PayloadData.class);
-
-                if (payloadData.getMsgType() == 1) {
-                    sendNotification(payloadData.getMsg(),remoteMessage.getData().get("message"));
-                } else if (payloadData.getMsgType() == 2) {
-                    Log.d("PayLoad", payloadData.getName());
+                if (message.data.msgType == 1) {
+                    sendNotification(message.data.Msg,jsonvalue);
+                    Log.d("Payload",message.data.Msg);
+                } else if (message.data.msgType == 2) {
                     SharedPreferenceClass.getInstance(getApplicationContext()).setDataPayload(jsonvalue);
                     SharedPreferenceClass.getInstance(getApplicationContext()).setDataPayloadboolean(true);
                 }
+
+
             }catch (Exception e){
                 e.printStackTrace();
             }
