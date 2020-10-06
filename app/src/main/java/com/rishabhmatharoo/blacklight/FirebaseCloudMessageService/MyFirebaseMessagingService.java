@@ -21,17 +21,22 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.rishabhmatharoo.blacklight.Activity.Activity_Main;
+import com.rishabhmatharoo.blacklight.FirebaseCloudMessageService.Model.DataClass;
 import com.rishabhmatharoo.blacklight.FirebaseCloudMessageService.Model.Message;
 import com.rishabhmatharoo.blacklight.FirebaseCloudMessageService.Model.PayloadData;
 import com.rishabhmatharoo.blacklight.FirebaseCloudMessageService.Model.Root;
 import com.rishabhmatharoo.blacklight.Preference.SharedPreferenceClass;
 import com.rishabhmatharoo.blacklight.R;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
@@ -114,34 +119,33 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
 
         if (remoteMessage.getNotification() != null) {
+
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
             if(remoteMessage.getData().size()>0){
-                sendNotification(remoteMessage.getNotification().getBody(),remoteMessage.getData().get("message"));
+
+                String str=convertHasmapIntoJsonString(remoteMessage.getData());
+                sendNotification(remoteMessage.getNotification().getBody(),str);
             }else{
                 sendNotification(remoteMessage.getNotification().getBody(),null);
             }
             return;
         }
 
-            try {
-                String jsonvalue = remoteMessage.getData().get("message");
-                Log.d("Payload",jsonvalue);
-                /*
-                Map<String,String> map=remoteMessage.getData();
-                String username=map.get(key1);
-                String msg=map.get(key2);
-                String msgtype=map.get(key3);
-                 */
-                //String json= jsonvalue;
-                Log.d("Payload",jsonvalue);
-                Message message = new Gson().fromJson(jsonvalue, Message.class);
-                Log.d("Payload",message.data.Msg);
 
-                if (message.data.msgType == 1) {
-                    sendNotification(message.data.Msg,jsonvalue);
-                    Log.d("Payload",message.data.Msg);
-                } else if (message.data.msgType == 2) {
-                    SharedPreferenceClass.getInstance(getApplicationContext()).setDataPayload(jsonvalue);
+
+            try {
+                //String jsonvalue = remoteMessage.getData().get("message");
+                //Log.d("Payload",jsonvalue);
+                String jsonString=convertHasmapIntoJsonString(remoteMessage.getData());
+                //String json= jsonvalue;
+                DataClass dataClass = new Gson().fromJson(jsonString, DataClass.class);
+                Log.d("Payload",dataClass.Msg);
+
+                if (dataClass.msgType.equals("1")) {
+                    sendNotification(dataClass.Msg,jsonString);
+                    Log.d("Payload",dataClass.Msg);
+                } else if (dataClass.msgType.equals("2")) {
+                    SharedPreferenceClass.getInstance(getApplicationContext()).setDataPayload(jsonString);
                     SharedPreferenceClass.getInstance(getApplicationContext()).setDataPayloadboolean(true);
                 }
 
@@ -206,7 +210,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
-
         String channelId = getString(R.string.default_notification_channel_id);
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder =
@@ -232,5 +235,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
     }
 
+private String convertHasmapIntoJsonString(Map<String,String> data){
 
+    Map<String, String> elements = data;
+
+    Gson gson = new Gson();
+    Type gsonType = new TypeToken<HashMap>(){}.getType();
+    String gsonString = gson.toJson(elements,gsonType);
+    //Log.d("PayLoad",gsonString);
+    return gsonString;
+
+    }
 }

@@ -10,6 +10,7 @@ import android.view.Window;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.rishabhmatharoo.blacklight.FirebaseCloudMessageService.Model.DataClass;
 import com.rishabhmatharoo.blacklight.FirebaseCloudMessageService.Model.Message;
 import com.rishabhmatharoo.blacklight.FirebaseCloudMessageService.Model.PayloadData;
 import com.rishabhmatharoo.blacklight.Preference.SharedPreferenceClass;
@@ -45,8 +46,8 @@ public class PayLoadDialog extends Dialog {
             if (!SharedPreferenceClass.getInstance(getContext()).getDataPayloadValue().isEmpty()) {
                 //PayloadData payloadData = new Gson().fromJson(SharedPreferenceClass.getInstance(getContext()).getDataPayloadValue(), PayloadData.class);
                // Log.d("PayLoad", payloadData.getName());
-                Message message=new Gson().fromJson(SharedPreferenceClass.getInstance(getContext()).getDataPayloadValue(),Message.class);
-                payloadvalue.setText(  "PayLoad Data Name:" + message.data.Name + "\n PayLoad Data Msg:" + message.data.Msg + "\n PayLoad Data MsgType:" + message.data.msgType);
+               DataClass message=new Gson().fromJson(SharedPreferenceClass.getInstance(getContext()).getDataPayloadValue(),DataClass.class);
+                payloadvalue.setText("PayLoad Data Name:" + message.Name + "\n PayLoad Data Msg:" + message.Msg + "\n PayLoad Data MsgType:" + message.msgType);
                 SharedPreferenceClass.getInstance(getContext()).setDataPayload("");
                 SharedPreferenceClass.getInstance(getContext()).setDataPayloadboolean(false);
             }

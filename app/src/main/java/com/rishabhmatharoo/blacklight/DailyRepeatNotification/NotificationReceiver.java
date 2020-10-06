@@ -51,7 +51,7 @@ public class NotificationReceiver extends BroadcastReceiver {
                         .setContentIntent(pendingIntent);
 
         // Since android Oreo notification channel is needed.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(channelId,
                     "Local Notification",
                     NotificationManager.IMPORTANCE_HIGH);
