@@ -148,16 +148,11 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
         String Fragmentname=bundle.getString(FragmentActionListener.FRAGMENT_NAME);
         Log.d("NotificationLog",Fragmentname);
         Fragmenttag=Fragmentname;
-        if(!Fragmentname.equals(currentScreenName)) {
-
-
             if (Fragmentname.equalsIgnoreCase(homescreenstr)) {
                 currentScreenName = homescreenstr;
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 ft.replace(R.id.yourfragment, new HomeScreen(), homescreentag);
-
                 ft.commit();
-
             } else if (Fragmentname.equalsIgnoreCase(gameviewstr)) {
                 currentScreenName = gameviewstr;
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -173,7 +168,6 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
                 ft.replace(R.id.yourfragment, gameOverFragment, gameovertag);
                 ft.addToBackStack(gameovertag);
                 ft.commit();
-
             } else if (Fragmentname.equalsIgnoreCase(languagestr)) {
                 currentScreenName = languagestr;
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -184,8 +178,6 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
                 ft.commit();
 
             }
-        }
-
     }
     @Override
     public void onBackPressed() {
@@ -458,9 +450,13 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
             String data = extras.getString("data");
            // PayloadData payloadData = new Gson().fromJson(data, PayloadData.class);
             // if(message.dataclass.msgType==1){
-                Bundle bundle =new Bundle();
-                bundle.putString(FragmentActionListener.FRAGMENT_NAME,gameviewstr);
-                onFragmentSelected(bundle);
+                Fragment fragment=getSupportFragmentManager().findFragmentById(R.id.yourfragment);
+                if(fragment instanceof GameView) {
+                }else{
+                    Bundle bundle = new Bundle();
+                    bundle.putString(FragmentActionListener.FRAGMENT_NAME, gameviewstr);
+                    onFragmentSelected(bundle);
+                }
             //}
         }
     }

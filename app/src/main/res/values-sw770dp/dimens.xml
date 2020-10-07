@@ -30,4 +30,6 @@
 	<dimen name="nativelayouticon">128dp</dimen>
 	<dimen name="nativeadheading">34sp</dimen>
 	<dimen name="nativemediaview">385dp</dimen>
+
+
 </resources>

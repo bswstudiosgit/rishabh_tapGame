@@ -1,6 +1,5 @@
 package com.rishabhmatharoo.blacklight.FirebaseCloudMessageService;
 
-import android.app.ActivityManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -10,33 +9,21 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
-import androidx.work.Data;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
-
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.rishabhmatharoo.blacklight.Activity.Activity_Main;
 import com.rishabhmatharoo.blacklight.FirebaseCloudMessageService.Model.DataClass;
-import com.rishabhmatharoo.blacklight.FirebaseCloudMessageService.Model.Message;
 import com.rishabhmatharoo.blacklight.FirebaseCloudMessageService.Model.PayloadData;
-import com.rishabhmatharoo.blacklight.FirebaseCloudMessageService.Model.Root;
 import com.rishabhmatharoo.blacklight.Preference.SharedPreferenceClass;
 import com.rishabhmatharoo.blacklight.R;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
@@ -73,51 +60,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         Log.d(TAG, "From: " + remoteMessage.getFrom());
 
-        // Check if message contains a data payload.
-        /*
-        if (remoteMessage.getData().size() > 0) {
-            Log.d(TAG, "Message data payload: " + remoteMessage.getData());
-            if(remoteMessage.getData().containsKey("message")){
-                try {
-                    String jsonvalue = remoteMessage.getData().get("message");
-                    Log.d("FirebasePayLoad", jsonvalue);
-                    PayloadData payloadData = new Gson().fromJson(jsonvalue, PayloadData.class);
-                    Log.d("PayLoadData",""+payloadData.getMsgType());
 
-                }catch (Exception e){
-                    //FirebaseCrashlytics.getInstance().log("Crash is catch under try-catch block");
-                    //FirebaseCrashlytics.getInstance().recordException(e);
-                    e.printStackTrace();
-                    Log.d("PayLoadValue:",""+e.toString());
-                }
-
-            }
-            }
-
-         */
         //Get Title and body
         Log.d("FirebaseMessaging","FirebaseNotification");
         // Check if message contains a notification payload.
-        /*
-        String datapayload=null;
-
-
-
-        String data = null;
-        if (remoteMessage.getData().size() > 0) {
-            //Have payload message
-            data = remoteMessage.getData().get("message");
-        }
-
-        String  body = "";
-        if (remoteMessage.getNotification() != null) {
-            body = remoteMessage.getNotification().getBody();
-        }
-
-        sendNotification(body, data);
-         */
-
-
         if (remoteMessage.getNotification() != null) {
 
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
@@ -125,34 +71,16 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
                 String str=convertHasmapIntoJsonString(remoteMessage.getData());
                 sendNotification(remoteMessage.getNotification().getBody(),str);
+
+
             }else{
                 sendNotification(remoteMessage.getNotification().getBody(),null);
             }
             return;
         }
+        sendPayloadMessage(remoteMessage.getData());
 
 
-
-            try {
-                //String jsonvalue = remoteMessage.getData().get("message");
-                //Log.d("Payload",jsonvalue);
-                String jsonString=convertHasmapIntoJsonString(remoteMessage.getData());
-                //String json= jsonvalue;
-                DataClass dataClass = new Gson().fromJson(jsonString, DataClass.class);
-                Log.d("Payload",dataClass.Msg);
-
-                if (dataClass.msgType.equals("1")) {
-                    sendNotification(dataClass.Msg,jsonString);
-                    Log.d("Payload",dataClass.Msg);
-                } else if (dataClass.msgType.equals("2")) {
-                    SharedPreferenceClass.getInstance(getApplicationContext()).setDataPayload(jsonString);
-                    SharedPreferenceClass.getInstance(getApplicationContext()).setDataPayloadboolean(true);
-                }
-
-
-            }catch (Exception e){
-                e.printStackTrace();
-            }
 
 
 
@@ -244,6 +172,33 @@ private String convertHasmapIntoJsonString(Map<String,String> data){
     String gsonString = gson.toJson(elements,gsonType);
     //Log.d("PayLoad",gsonString);
     return gsonString;
+
+    }
+    private void sendPayloadMessage(Map<String,String> map){
+        try {
+            //String jsonvalue = remoteMessage.getData().get("message");
+            //Log.d("Payload",jsonvalue);
+
+            String jsonString=convertHasmapIntoJsonString(map);
+            //String json= jsonvalue;
+            DataClass dataClass = new Gson().fromJson(jsonString, DataClass.class);
+            Log.d("Payload",dataClass.Msg);
+
+            if (dataClass.msgType.equals("1")) {
+
+                    sendNotification(dataClass.Msg,jsonString);
+
+
+            } else if (dataClass.msgType.equals("2")) {
+
+                SharedPreferenceClass.getInstance(getApplicationContext()).setDataPayload(jsonString);
+                SharedPreferenceClass.getInstance(getApplicationContext()).setDataPayloadboolean(true);
+            }
+
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
     }
 }

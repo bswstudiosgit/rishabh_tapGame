@@ -43,15 +43,14 @@
 
     <Button
         android:id="@+id/reward_watch"
-        android:layout_width="@dimen/buttonwidth"
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/buttonheight"
         android:layout_marginTop="@dimen/marginvalue2"
         android:layout_marginEnd="@dimen/marginvalue3"
         android:layout_marginRight="@dimen/marginvalue3"
         android:background="@drawable/quitbutton"
         android:text="@string/watch"
-        app:layout_constraintEnd_toStartOf="@+id/reward_cancel"
-        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/reward_textView2" />
 
@@ -61,12 +60,11 @@
         android:layout_height="@dimen/buttonheight"
         android:background="@drawable/greenpanel"
         android:text="@string/cancel"
+        android:layout_marginTop="@dimen/marginvalue12"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/reward_textView2"
-
-        android:layout_marginTop="@dimen/marginvalue2"
-        app:layout_constraintStart_toEndOf="@id/reward_watch"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/reward_watch"
+         />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
