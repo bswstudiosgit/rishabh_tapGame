@@ -48,9 +48,11 @@ public class RewardAdPopupDialog extends Dialog {
             @Override
             public void onClick(View v) {
 
+                AdMobHandler.getInstance(activity).setPlayerGameHasOver(false);
                 dismiss();
                 watch.setEnabled(false);
                 AdMobHandler.getInstance(activity).showRewardAd();
+                AdMobHandler.getInstance(activity).loadRewardAd();
 
             }
         });
@@ -58,6 +60,8 @@ public class RewardAdPopupDialog extends Dialog {
             @Override
             public void onClick(View v) {
                 //GameOver Fragment.
+
+                AdMobHandler.getInstance(activity).setPlayerGameHasOver(false);
                 dismiss();
                rewardAdCallBack.onScreenChangeToGameOVer();
                // callBack.onScreentransaction();

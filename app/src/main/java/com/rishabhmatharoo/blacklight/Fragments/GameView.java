@@ -51,7 +51,7 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
     private boolean isPausedapplication=false;
     private boolean isSavePopupActive=false;
     private boolean rewardAdLoaded=false;
-    private boolean hasPlayedStartGame=false;
+    private boolean hasPlayedStartGame=false,PlayerGameHasOver=false;
     //Interfaces
     PopupCallBackFragmentInterface popupCallBackFragmentInterface;
     FragmentActionListener fragmentActionListener;
@@ -60,7 +60,7 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
     private RemoteColorModel remoteColorModel;
     private String handlerTimer="";
     private Handler refreshNativeAdHandler=new Handler();
-
+    RewardAdPopupDialog rewardAdPopupDialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup group,Bundle savedInstanceState) {
@@ -71,7 +71,6 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
         handlerTimer=SharedPreferenceClass.getInstance(getContext()).readHandlerTimer();
         Log.d("remoteHandlerTime",handlerTimer);
         //Load Reward Ad in onCreateView Method.
-        AdMobHandler.getInstance(getActivity()).loadRewardAd();
 
         AdMobHandler.getInstance(getActivity()).setRewardAdCallBack(new RewardAdCallBack() {
 
@@ -105,13 +104,18 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
 
 
         });
+        Log.d("RewardAdLoaded",""+AdMobHandler.getInstance(getActivity()).hasRewardAdLoadedOnce());
+        if(!AdMobHandler.getInstance(getActivity()).hasRewardAdLoadedOnce()) {
 
+            AdMobHandler.getInstance(getActivity()).loadRewardAd();
+        }
         addCutomKeyInCrashlytics();
         return inflater.inflate(R.layout.gameviewfragment,group,false);
 
     }
     @Override
     public void onViewCreated(View view,Bundle savedInstance){
+
         dialog=new SavePopupDialog(getActivity(),refreshNativeAdHandler);
         Log.d("GameView","Yes this is calling");
         orangecolor = (ImageView)view.findViewById(R.id.orangecolorid);
@@ -239,6 +243,7 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
                     if (prev_score == finalscore) {
                         GameOver();
                         gameover = true;
+
                     } else {
                         handler.postDelayed(this, Integer.parseInt(handlerTimer));
                     }
@@ -268,12 +273,14 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
         super.onPause();
         isPausedapplication=true;
         hasPlayedStartGame=false;
+        rewardAdPopupDialog.dismiss();
         img.setEnabled(true);
         setallcolortonormal();
         disableAllListener();
         finalscoreduringpausedgame=finalscore;
         SharedPreferenceClass.getInstance(getContext()).write("score",finalscore);
         SharedPreferenceClass.getInstance(getContext()).writeBoolean("isapplicationinbg",true);
+
 
     }
 
@@ -318,6 +325,7 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
         Log.d("GameView","OnStart");
 
         super.onStart();
+        checkGameOverLogic();
     }
 
     public void setallcolortonormal(){
@@ -448,11 +456,12 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
     }
     private void GameOver(){
         //Should not show popup when reward ad is failed to load.
-        if(!hasAlreadytakenreward && !rewardAdFailedToLoad && rewardAdLoaded){
+        if(!hasAlreadytakenreward && !rewardAdFailedToLoad && AdMobHandler.getInstance(getActivity()).hasRewardAdLoadedOnce()){
 
+            AdMobHandler.getInstance(getActivity()).setPlayerGameHasOver(true);
             disableAllListener();
             Log.d("rewardDialog","Dialog");
-            RewardAdPopupDialog rewardAdPopupDialog=new RewardAdPopupDialog(getActivity());
+            rewardAdPopupDialog=new RewardAdPopupDialog(getActivity());
             rewardAdPopupDialog.setCancelable(false);
             rewardAdPopupDialog.setRewardAdCallBack(new RewardAdCallBack() {
                 @Override
@@ -580,5 +589,16 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
         FirebaseCrashlytics.getInstance().setCustomKey(CrashlyticsTags.ScreenTag,CrashlyticsTags.screen_name3);
         FirebaseCrashlytics.getInstance().setCustomKey(CrashlyticsTags.BestScoreTag,SharedPreferenceClass.getInstance(getContext()).read(SharedPreferenceClass.BestScore));
         CrashlyticsTags.screenTransitions=CrashlyticsTags.screenTransitions+" > Game";
+    }
+    private void checkGameOverLogic(){
+        Log.d("RewardAdGO",""+PlayerGameHasOver);
+        if(AdMobHandler.getInstance(getActivity()).isPlayerGameHasOver()){
+            if(!new RewardAdPopupDialog(getActivity()).isShowing()) {
+                Log.d("RewardAdGO","Yes implementing Gameover");
+                GameOver();
+            }
+
+
+        }
     }
 }

@@ -61,6 +61,8 @@ public class AdMobHandler {
     AdView bannerad;
     public boolean VideoAdOpened=false;
     VideoAdCallBack videoAdCallBack;
+    private boolean rewardAdLoadedorNot=false;
+    private boolean playerGameHasOver=false;
     private AdMobHandler(Activity activity){
 
         this.activity=new WeakReference<>(activity);
@@ -100,6 +102,7 @@ public class AdMobHandler {
                     public void onAdLoaded() {
                         // Code to be executed when an ad finishes loading.
                         Toast.makeText(activity.get().getApplicationContext(), "Banner: Ad is Loaded", Toast.LENGTH_SHORT).show();
+
                     }
 
                     @Override
@@ -399,6 +402,7 @@ public class AdMobHandler {
                 Log.d("RewardAd","Ad is loaded Completed");
                 rewardAdCallback.onRewardAdLoaded();
                 Toast.makeText(activity.get().getApplicationContext(),"RewardAdLoaded",Toast.LENGTH_SHORT).show();
+                rewardAdLoadedorNot=true;
 
             }
 
@@ -450,10 +454,19 @@ public class AdMobHandler {
     public void setVideoAdCallBack(VideoAdCallBack callBack){
         this.videoAdCallBack=callBack;
     }
-    public boolean hasVideoAdOpened(){
-        return VideoAdOpened;
-    }
+
     public void setVideoAdOpen(boolean var){
         this.VideoAdOpened=var;
+    }
+    public boolean hasRewardAdLoadedOnce(){
+        return rewardAdLoadedorNot;
+    }
+
+    public boolean isPlayerGameHasOver() {
+        return playerGameHasOver;
+    }
+
+    public void setPlayerGameHasOver(boolean playerGameHasOver) {
+        this.playerGameHasOver = playerGameHasOver;
     }
 }
