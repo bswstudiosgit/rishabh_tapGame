@@ -25,6 +25,7 @@ import com.rishabhmatharoo.blacklight.Interfaces.FragmentActionListener;
 import com.rishabhmatharoo.blacklight.Interfaces.GameViewInterface;
 import com.rishabhmatharoo.blacklight.Interfaces.PopupCallBackFragmentInterface;
 import com.rishabhmatharoo.blacklight.Interfaces.RewardAdCallBack;
+import com.rishabhmatharoo.blacklight.Interfaces.VideoAdCallBack;
 import com.rishabhmatharoo.blacklight.Preference.SharedPreferenceClass;
 import com.rishabhmatharoo.blacklight.R;
 import com.rishabhmatharoo.blacklight.CustomDialog.SavePopupDialog;
@@ -35,7 +36,7 @@ import java.util.Timer;
 
 public class GameView extends Fragment implements PopupCallBackFragmentInterface, GameViewInterface {
 
-    private ImageView orangecolor,bluecolor,yellowcolor,greencolor;
+    private ImageView orangecolor,bluecolor,yellowcolor,greencolor,img;
     private TextView scorecounter;
     public  int finalscore=0,prev_score=-1;
     private boolean gameover=false,hasAlreadytakenreward=false,rewardAdPopupActive=false,rewardAdFailedToLoad=false;
@@ -50,6 +51,7 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
     private boolean isPausedapplication=false;
     private boolean isSavePopupActive=false;
     private boolean rewardAdLoaded=false;
+    private boolean hasPlayedStartGame=false;
     //Interfaces
     PopupCallBackFragmentInterface popupCallBackFragmentInterface;
     FragmentActionListener fragmentActionListener;
@@ -58,6 +60,7 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
     private RemoteColorModel remoteColorModel;
     private String handlerTimer="";
     private Handler refreshNativeAdHandler=new Handler();
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup group,Bundle savedInstanceState) {
@@ -180,8 +183,24 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
 
             }
         });
+        img=view.findViewById(R.id.playbuttonID);
+        img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hasPlayedStartGame=true;
+                onResume();
+                img.setEnabled(false);
 
-
+            }
+        });
+        /*
+    AdMobHandler.getInstance(getActivity()).setVideoAdCallBack(new VideoAdCallBack() {
+        @Override
+        public void callresumeFunction() {
+            img.setVisibility(View.VISIBLE);
+        }
+    });
+         */
 }
 
 
@@ -248,6 +267,10 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
       refreshNativeAdHandler.removeCallbacksAndMessages(null);
         super.onPause();
         isPausedapplication=true;
+        hasPlayedStartGame=false;
+        img.setEnabled(true);
+        setallcolortonormal();
+        disableAllListener();
         finalscoreduringpausedgame=finalscore;
         SharedPreferenceClass.getInstance(getContext()).write("score",finalscore);
         SharedPreferenceClass.getInstance(getContext()).writeBoolean("isapplicationinbg",true);
@@ -274,8 +297,7 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
 
         super.onResume();
 //        pausedapplication=true;
-
-        if((!isPausedapplication || !isSavePopupActive) && !rewardAdPopupActive){
+        if((!isPausedapplication || !isSavePopupActive) && !rewardAdPopupActive && hasPlayedStartGame){
             Log.d("GameViewP","Onresume");
             prev_score=prev_score-1;
             colornumber++;
@@ -284,7 +306,7 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
             }
             rungame(finalscoreduringpausedgame);
         }
-
+        AdMobHandler.getInstance(getActivity()).setVideoAdOpen(false);
         isPausedapplication=false;
 
 
@@ -450,9 +472,7 @@ public class GameView extends Fragment implements PopupCallBackFragmentInterface
 
                 @Override
                 public void onRewardAdLoaded() {
-
                 }
-
             });
             rewardAdPopupDialog.show();
             rewardAdPopupActive=true;

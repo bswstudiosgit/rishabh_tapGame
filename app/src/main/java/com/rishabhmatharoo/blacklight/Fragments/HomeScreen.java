@@ -124,6 +124,7 @@ public class HomeScreen extends Fragment {
                               //AdMobHandler.getInstance(getActivity()).showIntertitialAd();
 
                               AdMobHandler.getInstance(getActivity()).showInterstitialVideoAd();
+
                               AdMobHandler.getInstance(getActivity()).decrementNumberOfInterstitialLoad();
                               AdMobHandler.getInstance(getActivity()).loadInterstitialVideoAd();
 

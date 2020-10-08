@@ -412,8 +412,8 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 16);
-        calendar.set(Calendar.MINUTE,1);
+        calendar.set(Calendar.HOUR_OF_DAY, 18);
+        calendar.set(Calendar.MINUTE,30);
         Intent intent = new Intent(getApplicationContext(), NotificationReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent,
                 0);
@@ -427,19 +427,6 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
             alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, timeInMillis, AlarmManager.INTERVAL_DAY, pendingIntent);
         }
 
-        /*
-        Calendar calendar=Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY,17);
-        calendar.set(Calendar.MINUTE,50);
-        Intent intent=new Intent(getApplicationContext(), NotificationReceiver.class);
-
-        PendingIntent pendingIntent=PendingIntent.getBroadcast(getApplicationContext(),100,intent,PendingIntent.FLAG_UPDATE_CURRENT);
-
-        AlarmManager alarmManager=(AlarmManager)getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),1000*30,pendingIntent);
-        //SharedPreferenceClass.getInstance(this).writeBoolean(SharedPreferenceClass.dailyNotification,true);
-         */
     }
     @Override
     protected void onNewIntent(Intent intent) {
@@ -464,13 +451,11 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
             //PayloadData payloadData = new Gson().fromJson(payloadmssg, PayloadData.class);
     //    Log.d("NotificationLog","checkforpayload"+payloadData.getMsgType());
        // Message message=new Gson().fromJson(payloadmssg,Message.class);
-
         //if(message.dataclass.msgType==1){
                 Bundle bundle =new Bundle();
                 bundle.putString(FragmentActionListener.FRAGMENT_NAME,gameviewstr);
                 onFragmentSelected(bundle);
           //  }
-
     }
     private void loadPayloadValue(){
         if(SharedPreferenceClass.getInstance(getApplicationContext()).getDataPayloadboolean()){
@@ -478,7 +463,4 @@ public class Activity_Main extends AppCompatActivity implements FragmentActionLi
             dialog.show();
         }
     }
-
-
-
 }

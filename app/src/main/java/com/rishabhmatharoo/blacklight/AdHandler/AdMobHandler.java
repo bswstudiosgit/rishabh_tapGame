@@ -37,6 +37,7 @@ import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.rishabhmatharoo.blacklight.Activity.Activity_Main;
 import com.rishabhmatharoo.blacklight.Interfaces.FragmentActionListener;
 import com.rishabhmatharoo.blacklight.Interfaces.RewardAdCallBack;
+import com.rishabhmatharoo.blacklight.Interfaces.VideoAdCallBack;
 import com.rishabhmatharoo.blacklight.R;
 
 import java.lang.ref.WeakReference;
@@ -57,8 +58,9 @@ public class AdMobHandler {
     private int numberOfInterstialLoad=0;
     private FrameLayout bannerLayout;
     InterstitialAd interstitialAdVideo;
-
     AdView bannerad;
+    public boolean VideoAdOpened=false;
+    VideoAdCallBack videoAdCallBack;
     private AdMobHandler(Activity activity){
 
         this.activity=new WeakReference<>(activity);
@@ -222,13 +224,21 @@ public class AdMobHandler {
             public void onAdOpened() {
                 // Code to be executed when an ad opens an overlay that
                 // covers the screen.
+                VideoAdOpened=true;
                 Toast.makeText(activity.get().getApplicationContext(), "Video: Ad is Opened", Toast.LENGTH_SHORT).show();
+
             }
 
             @Override
             public void onAdClicked() {
                 // Code to be executed when the user clicks on an ad.
                 Toast.makeText(activity.get().getApplicationContext(), "Video: Ad is Clicked", Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onAdClosed() {
+                //VideoAdOpened=false;
+                videoAdCallBack.callresumeFunction();
+                Toast.makeText(activity.get().getApplicationContext(),"VideoAd Closed",Toast.LENGTH_SHORT).show();
             }
 
         });
@@ -436,5 +446,14 @@ public class AdMobHandler {
     }
     public void setRewardAdCallBack(RewardAdCallBack rewardAdCallBack){
         this.rewardAdCallback=rewardAdCallBack;
+    }
+    public void setVideoAdCallBack(VideoAdCallBack callBack){
+        this.videoAdCallBack=callBack;
+    }
+    public boolean hasVideoAdOpened(){
+        return VideoAdOpened;
+    }
+    public void setVideoAdOpen(boolean var){
+        this.VideoAdOpened=var;
     }
 }

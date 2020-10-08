@@ -59,38 +59,24 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // TODO(developer): Handle FCM messages here.
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         Log.d(TAG, "From: " + remoteMessage.getFrom());
-
-
         //Get Title and body
         Log.d("FirebaseMessaging","FirebaseNotification");
         // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
-
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
-            if(remoteMessage.getData().size()>0){
-
-                String str=convertHasmapIntoJsonString(remoteMessage.getData());
-                sendNotification(remoteMessage.getNotification().getBody(),str);
-
-
-            }else{
+            //if(remoteMessage.getData().size()>0){
+              //  String str=convertHasmapIntoJsonString(remoteMessage.getData());
+               // sendNotification(remoteMessage.getNotification().getBody(),str);
+            //}else{
                 sendNotification(remoteMessage.getNotification().getBody(),null);
-            }
+            //}
             return;
         }
         sendPayloadMessage(remoteMessage.getData());
-
-
-
-
-
         // Also if you intend on generating your own notifications as a result of a received FCM
         // message, here is where that should be initiated. See sendNotification method below.
-
-
     }
     // [END receive_message]
-
 
     // [START on_new_token]
 
@@ -163,42 +149,31 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
     }
 
-private String convertHasmapIntoJsonString(Map<String,String> data){
+    private String convertHasmapIntoJsonString(Map<String,String> data){
 
-    Map<String, String> elements = data;
-
-    Gson gson = new Gson();
-    Type gsonType = new TypeToken<HashMap>(){}.getType();
-    String gsonString = gson.toJson(elements,gsonType);
-    //Log.d("PayLoad",gsonString);
-    return gsonString;
-
+        Map<String, String> elements = data;
+        Gson gson = new Gson();
+        Type gsonType = new TypeToken<HashMap>(){}.getType();
+        String gsonString = gson.toJson(elements,gsonType);
+        //Log.d("PayLoad",gsonString);
+        return gsonString;
     }
     private void sendPayloadMessage(Map<String,String> map){
         try {
             //String jsonvalue = remoteMessage.getData().get("message");
             //Log.d("Payload",jsonvalue);
-
             String jsonString=convertHasmapIntoJsonString(map);
             //String json= jsonvalue;
             DataClass dataClass = new Gson().fromJson(jsonString, DataClass.class);
             Log.d("Payload",dataClass.Msg);
-
             if (dataClass.msgType.equals("1")) {
-
                     sendNotification(dataClass.Msg,jsonString);
-
-
             } else if (dataClass.msgType.equals("2")) {
-
                 SharedPreferenceClass.getInstance(getApplicationContext()).setDataPayload(jsonString);
                 SharedPreferenceClass.getInstance(getApplicationContext()).setDataPayloadboolean(true);
             }
-
-
         }catch (Exception e){
             e.printStackTrace();
         }
-
     }
 }
